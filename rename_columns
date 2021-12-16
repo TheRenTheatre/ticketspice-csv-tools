@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby -w
+
+require 'csv'
+
+unless ARGV.length == 1
+  warn "Usage: #{$0} path/to/orders.csv\n\n"
+  exit 1
+end
+
+
+ticketspice_to_mailchimp_converter = proc { |header|
+  translation = Hash.new { |h, key| key }
+  translation.merge!(
+    "Billing Name (First Name)":        "First Name",
+    "Billing Name (Last Name)":         "Last Name",
+    "Billing Email Address":            "Email Address",
+    "Billing Phone Number":             "Phone",
+    "Billing Address (Address 1)":      "Address - Street Address",
+    "Billing Address (City)":           "Address - City",
+    "Billing Address (State/Province)": "Address - State/Prov/Region",
+    "Billing Address (Country)":        "Address - Country",
+    "Billing Address (Postal Code)":    "Address - Zip/Postal"
+  )
+  translation[header]
+}
+
+pp CSV.parse(File.read(ARGV[0]), headers: true,
+                  header_converters: ticketspice_to_mailchimp_converter).headers
