@@ -11,15 +11,15 @@ end
 ticketspice_to_mailchimp_converter = proc { |header|
   translation = Hash.new { |h, key| key }
   translation.merge!(
-    "Billing Name (First Name)":        "First Name",
-    "Billing Name (Last Name)":         "Last Name",
-    "Billing Email Address":            "Email Address",
-    "Billing Phone Number":             "Phone",
-    "Billing Address (Address 1)":      "Address - Street Address",
-    "Billing Address (City)":           "Address - City",
-    "Billing Address (State/Province)": "Address - State/Prov/Region",
-    "Billing Address (Country)":        "Address - Country",
-    "Billing Address (Postal Code)":    "Address - Zip/Postal"
+    "Billing Name (First Name)"        => "First Name",
+    "Billing Name (Last Name)"         => "Last Name",
+    "Billing Email Address"            => "Email Address",
+    "Billing Phone Number"             => "Phone",
+    "Billing Address (Address 1)"      => "Address - Street Address",
+    "Billing Address (City)"           => "Address - City",
+    "Billing Address (State/Province)" => "Address - State/Prov/Region",
+    "Billing Address (Country)"        => "Address - Country",
+    "Billing Address (Postal Code)"    => "Address - Zip/Postal"
   )
   translation[header]
 }
