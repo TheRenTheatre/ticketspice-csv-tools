@@ -8,7 +8,7 @@ unless ARGV.length == 1
 end
 
 
-ticketspice_to_mailchimp_converter = proc { |header|
+ticketspice_to_mailchimp_converter = proc { |ticketspice_header|
   translation = Hash.new { |h, key| key }
   translation.merge!(
     "Billing Name (First Name)"        => "First Name",
@@ -21,7 +21,7 @@ ticketspice_to_mailchimp_converter = proc { |header|
     "Billing Address (Country)"        => "Address - Country",
     "Billing Address (Postal Code)"    => "Address - Zip/Postal"
   )
-  translation[header]
+  translation[ticketspice_header]
 }
 
 pp CSV.parse(File.read(ARGV[0]), headers: true,
