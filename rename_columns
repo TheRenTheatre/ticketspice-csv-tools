@@ -1,15 +1,80 @@
 #!/usr/bin/env ruby -w
 
 require 'csv'
+require 'date'
 
 unless ARGV.length == 1
   warn "Usage: #{$0} path/to/orders.csv\n\n"
   exit 1
 end
 
+REQUIRED_TICKETSPICE_FIELDS = ["Page Name",
+                               "Date Selection",
+                               "Billing Name (First Name)",
+                               "Billing Name (Last Name)",
+                               "Billing Email Address",
+                               "Billing Phone Number",
+                               "Billing Address (Address 1)",
+                               "Billing Address (City)",
+                               "Billing Address (State/Province)",
+                               "Billing Address (Country)",
+                               "Billing Address (Postal Code)"]
+
+
+def tags_to_apply(page_name, date_selection)
+  tags = []
+  date = Date.parse(date_selection)
+
+  if page_name == "The Office Holiday Party Musical Extravaganza Show" && date.year == 2021
+    tags << "Patrons - 2021 - The Office Holiday Party Musical Extravaganza Show, Entire Run"
+    tags << case date
+            when Date.parse("2021-12-02")..Date.parse("2021-12-05")
+              "Patrons - 2021 - The Office Holiday Party Musical Extravaganza Show, 1st Week"
+            when Date.parse("2021-12-09")..Date.parse("2021-12-12")
+              "Patrons - 2021 - The Office Holiday Party Musical Extravaganza Show, 2nd Week"
+            when Date.parse("2021-12-16")..Date.parse("2021-12-19")
+              "Patrons - 2021 - The Office Holiday Party Musical Extravaganza Show, 3rd Week"
+            else raise "Unknown show date for Office Party: #{date}"
+            end
+
+  elsif page_name =~ /^Dickens by Candl?elight$/ && date.year == 2021
+    # It was misspelled "Candelight" in Ticketspice
+    tags << "Patrons - 2021 - Dickens by Candlelight, Entire Run"
+
+  elsif page_name == "La Medéa" && date.year == 2022
+    tags << "Patrons - 2022 - La Medéa, Entire Run"
+    tags << case date
+            when Date.parse("2022-01-21")..Date.parse("2022-01-23")
+              "Patrons - 2021 - La Medéa, 1st Week"
+            when Date.parse("2022-01-28")..Date.parse("2022-01-30")
+              "Patrons - 2021 - La Medéa, 2nd Week"
+            when Date.parse("2022-02-04")..Date.parse("2022-02-06")
+              "Patrons - 2021 - La Medéa, 3rd Week"
+            when Date.parse("2022-02-10")..Date.parse("2022-02-13")
+              "Patrons - 2021 - La Medéa, 4th Week"
+            else raise "Unknown show date for La Medéa: #{date}"
+            end
+  else
+    raise "Unknown combination of Page Name (#{page_name.inspect}) and year (#{date_selection.inspect} parsed as #{date.year})"
+  end
+
+  tags
+end
+
+def mailchimp_style_combined_address_field_for_row(row)
+  joined = [row["Address - Street Address"],
+            row["Address - City"],
+            row["Address - State/Prov/Region"],
+            row["Address - Zip/Postal"].to_s[0...5],
+            row["Address - Country"]].join("  ")
+
+   return nil if joined.strip.empty?
+   joined
+end
+
 
 ticketspice_to_mailchimp_converter = proc { |ticketspice_header|
-  translation = Hash.new { |h, key| key }
+  translation = Hash.new { |h, key| h[key] = key; key }
   translation.merge!(
     "Billing Name (First Name)"        => "First Name",
     "Billing Name (Last Name)"         => "Last Name",
@@ -24,5 +89,33 @@ ticketspice_to_mailchimp_converter = proc { |ticketspice_header|
   translation[ticketspice_header]
 }
 
-pp CSV.parse(File.read(ARGV[0]), headers: true,
-                  header_converters: ticketspice_to_mailchimp_converter).headers
+file_contents = File.read(ARGV[0], encoding: 'bom|utf-8')
+
+# Make sure we have all the fields we need
+header_test_csv = CSV.parse(file_contents.lines.first, headers: true)
+missing_headers = REQUIRED_TICKETSPICE_FIELDS.sort - header_test_csv.headers.sort
+if missing_headers.any?
+  raise "Your orders report is missing these required fields: #{missing_headers.inspect}"
+end
+
+# Parse whole file and rename headers to Mailchimp's names
+table = CSV.parse(file_contents, headers: true,
+                                 header_converters: ticketspice_to_mailchimp_converter)
+
+# Add two more fields
+table.each do |row|
+  row["Tags"] = tags_to_apply(row["Page Name"], row["Date Selection"]).map(&:inspect).join(",")
+  row["Address"] = mailchimp_style_combined_address_field_for_row(row)
+end
+
+# Finally, generate a new one that only includes the fields they want
+table.by_col!
+table.delete_if { |header, data|
+  !["First name", "Last name", "Email Address", "Phone", "Address", "Tags"].include?(header)
+}
+
+
+puts table.to_s
+
+# TODO Okay that was good but it should unique them on email, join their tags, and prompt when the
+# name/address/phone is different or something.
