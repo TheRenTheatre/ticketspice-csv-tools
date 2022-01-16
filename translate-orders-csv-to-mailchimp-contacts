@@ -129,7 +129,7 @@ end
 # Finally, generate a new one that only includes the fields they want
 table.by_col!
 table.delete_if { |header, data|
-  !["First name", "Last name", "Email Address", "Phone", "Address", "Tags"].include?(header)
+  !["First Name", "Last Name", "Email Address", "Phone", "Address", "Tags"].include?(header)
 }
 
 
