@@ -23,9 +23,14 @@ REQUIRED_TICKETSPICE_FIELDS = ["Page Name",
 
 def tags_to_apply(page_name, date_selection)
   tags = []
-  date = Date.parse(date_selection)
+  if date_selection.nil? # one-off events
+    date = year = nil
+  else
+    date = Date.parse(date_selection)
+    year = date.year
+  end
 
-  if page_name == "Nosferatu" && date.year == 2021
+  if page_name == "Nosferatu" && year == 2021
     tags << "Patrons - 2021 - Nosferatu, Entire Run"
     tags << case date
             when Date.parse("2021-10-01")..Date.parse("2021-10-02")
@@ -43,7 +48,7 @@ def tags_to_apply(page_name, date_selection)
             else raise "Unknown show date for Nosferatu: #{date}"
             end
 
-  elsif page_name == "The Office Holiday Party Musical Extravaganza Show" && date.year == 2021
+  elsif page_name == "The Office Holiday Party Musical Extravaganza Show" && year == 2021
     tags << "Patrons - 2021 - The Office Holiday Party Musical Extravaganza Show, Entire Run"
     tags << case date
             when Date.parse("2021-12-02")..Date.parse("2021-12-05")
@@ -55,11 +60,11 @@ def tags_to_apply(page_name, date_selection)
             else raise "Unknown show date for Office Party: #{date}"
             end
 
-  elsif page_name =~ /^Dickens by Candl?elight$/ && date.year == 2021
+  elsif page_name =~ /^Dickens by Candl?elight$/ && year == 2021
     # It was misspelled "Candelight" in Ticketspice
     tags << "Patrons - 2021 - Dickens by Candlelight, Entire Run"
 
-  elsif page_name == "La Medéa" && date.year == 2022
+  elsif page_name == "La Medéa" && year == 2022
     tags << "Patrons - 2022 - La Medéa, Entire Run"
     tags << case date
             when Date.parse("2022-01-21")..Date.parse("2022-01-23")
@@ -73,7 +78,7 @@ def tags_to_apply(page_name, date_selection)
             else raise "Unknown show date for La Medéa: #{date}"
             end
   else
-    raise "Unknown combination of Page Name (#{page_name.inspect}) and year (#{date_selection.inspect} parsed as #{date.year})"
+    raise "Unknown combination of Page Name (#{page_name.inspect}) and year (#{date_selection.inspect} parsed as #{year.inspect})"
   end
 
   tags
