@@ -3,10 +3,6 @@
 require 'csv'
 require 'date'
 
-unless ARGV.length == 1
-  warn "Usage: #{$0} path/to/orders.csv\n\n"
-  exit 1
-end
 
 REQUIRED_TICKETSPICE_FIELDS = ["Page Name",
                                "Date Selection",
@@ -19,6 +15,13 @@ REQUIRED_TICKETSPICE_FIELDS = ["Page Name",
                                "Billing Address (State/Province)",
                                "Billing Address (Country)",
                                "Billing Address (Postal Code)"]
+
+unless ARGV.length == 1
+  warn "Usage: #{$0} path/to/orders.csv\n\n"
+  warn "Required fields:"
+  warn "  - " + REQUIRED_TICKETSPICE_FIELDS.join("\n  - ")
+  exit 1
+end
 
 
 def tags_to_apply(page_name, date_selection)
