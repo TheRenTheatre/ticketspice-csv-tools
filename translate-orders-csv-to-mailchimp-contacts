@@ -80,12 +80,15 @@ def tags_to_apply(page_name, date_selection)
               "Patrons - 2021 - La Medéa, 4th Week"
             else raise "Unknown show date for La Medéa: #{date}"
             end
+
   elsif page_name == "Stephen Pugh in Concert"
     # One-off event: Feb 9 2022 at 8 PM
     tags << "Patrons - 2022 - Stephen Pugh in Concert"
+
   elsif page_name == "Laurel Hatfield in Concert"
     # One-off event: Feb 22 2022 at 8 PM
     tags << "Patrons - 2022 - Laurel Hatfield in Concert"
+
   elsif page_name == "Oscar Wilde and Jesus Christ Walk Into a Gay Bar" && year == 2022
     tags << "Patrons - 2022 - Oscar Wilde and Jesus Christ Walk Into a Gay Bar, Entire Run"
     tags << case date
@@ -99,6 +102,7 @@ def tags_to_apply(page_name, date_selection)
               "Patrons - 2022 - Oscar Wilde and Jesus Christ Walk Into a Gay Bar, 4th Week"
             else raise "Unknown show date for Oscar Wilde and Jesus Christ Walk Into a Gay Bar: #{date}"
             end
+
   else
     raise "Unknown combination of Page Name (#{page_name.inspect}) and year (#{date_selection.inspect} parsed as #{year.inspect})"
   end
