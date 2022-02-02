@@ -103,6 +103,24 @@ def tags_to_apply(page_name, date_selection)
             else raise "Unknown show date for Oscar Wilde and Jesus Christ Walk Into a Gay Bar: #{date}"
             end
 
+  elsif page_name == "Gorgeous" && year == 2022
+    tags << "Patrons - 2022 - Gorgeous, Entire Run"
+    tags << case date
+            when Date.parse("2022-03-04")..Date.parse("2022-03-06")
+              "Patrons - 2022 - Gorgeous, 1st Week"
+            when Date.parse("2022-03-11")..Date.parse("2022-03-13")
+              "Patrons - 2022 - Gorgeous, 2nd Week"
+            when Date.parse("2022-03-18")..Date.parse("2022-03-20")
+              "Patrons - 2022 - Gorgeous, 3rd Week"
+            when Date.parse("2022-03-25")..Date.parse("2022-03-27")
+              "Patrons - 2022 - Gorgeous, 4th Week"
+            when Date.parse("2022-03-31")..Date.parse("2022-04-03")
+              "Patrons - 2022 - Gorgeous, 5th Week"
+            when Date.parse("2022-04-07")..Date.parse("2022-04-10")
+              "Patrons - 2022 - Gorgeous, 6th Week"
+            else raise "Unknown show date for Gorgeous: #{date}"
+            end
+
   else
     raise "Unknown combination of Page Name (#{page_name.inspect}) and year (#{date_selection.inspect} parsed as #{year.inspect})"
   end
