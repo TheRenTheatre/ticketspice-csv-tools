@@ -122,7 +122,7 @@ def tags_to_apply(page_name, date_selection)
             end
 
   else
-    raise "Unknown combination of Page Name (#{page_name.inspect}) and year (#{date_selection.inspect} parsed as #{year.inspect})"
+    raise "No handler for Page Name #{page_name.inspect} and year #{year.inspect} (parsed from #{date_selection.inspect})"
   end
 
   tags
