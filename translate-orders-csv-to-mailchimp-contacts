@@ -71,13 +71,13 @@ def tags_to_apply(page_name, date_selection)
     tags << "Patrons - 2022 - La Medéa, Entire Run"
     tags << case date
             when Date.parse("2022-01-21")..Date.parse("2022-01-23")
-              "Patrons - 2021 - La Medéa, 1st Week"
+              "Patrons - 2022 - La Medéa, 1st Week"
             when Date.parse("2022-01-28")..Date.parse("2022-01-30")
-              "Patrons - 2021 - La Medéa, 2nd Week"
+              "Patrons - 2022 - La Medéa, 2nd Week"
             when Date.parse("2022-02-04")..Date.parse("2022-02-06")
-              "Patrons - 2021 - La Medéa, 3rd Week"
+              "Patrons - 2022 - La Medéa, 3rd Week"
             when Date.parse("2022-02-10")..Date.parse("2022-02-13")
-              "Patrons - 2021 - La Medéa, 4th Week"
+              "Patrons - 2022 - La Medéa, 4th Week"
             else raise "Unknown show date for La Medéa: #{date}"
             end
 
