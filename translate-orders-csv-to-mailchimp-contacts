@@ -133,7 +133,8 @@ def tags_to_apply(page_name, date_selection)
 
 
   else
-    raise "No handler for Page Name #{page_name.inspect} and year #{year.inspect} (parsed from #{date_selection.inspect})"
+    warn "\n\n\n"
+    raise "No handler for Page Name #{page_name.inspect} and year #{year.inspect} (parsed from #{date_selection.inspect})\n\n\n"
   end
 
   tags
