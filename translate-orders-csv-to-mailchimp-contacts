@@ -121,6 +121,17 @@ def tags_to_apply(page_name, date_selection)
             else raise "Unknown show date for Gorgeous: #{date}"
             end
 
+  elsif page_name == "Ain't Done Bad" && year == 2022
+    tags << "Patrons - 2022 - Ain't Done Bad, Entire Run"
+    tags << case date
+            when Date.parse("2022-04-21")..Date.parse("2022-04-24")
+              "Patrons - 2022 - Ain't Done Bad, 1st Week"
+            when Date.parse("2022-04-27")..Date.parse("2022-05-01")
+              "Patrons - 2022 - Ain't Done Bad, 2nd Week"
+            else raise "Unknown show date for Ain't Done Bad: #{date}"
+            end
+
+
   else
     raise "No handler for Page Name #{page_name.inspect} and year #{year.inspect} (parsed from #{date_selection.inspect})"
   end
