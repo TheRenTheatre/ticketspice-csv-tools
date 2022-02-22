@@ -145,7 +145,7 @@ def mailchimp_style_combined_address_field_for_row(row)
   columns = [row["Address - Street Address"],
              row["Address - City"],
              row["Address - State/Prov/Region"],
-             row["Address - Zip/Postal"].to_s[0...5],
+             row["Address - Zip/Postal"],
              row["Address - Country"]]
   columns.compact!
   columns.map! { |col|
