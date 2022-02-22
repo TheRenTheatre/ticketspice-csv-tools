@@ -141,14 +141,20 @@ def tags_to_apply(page_name, date_selection)
 end
 
 def mailchimp_style_combined_address_field_for_row(row)
-  joined = [row["Address - Street Address"],
-            row["Address - City"],
-            row["Address - State/Prov/Region"],
-            row["Address - Zip/Postal"].to_s[0...5],
-            row["Address - Country"]].join("  ")
+  # Docs: https://mailchimp.com/help/import-mailing-addresses-postcards/
+  columns = [row["Address - Street Address"],
+             row["Address - City"],
+             row["Address - State/Prov/Region"],
+             row["Address - Zip/Postal"].to_s[0...5],
+             row["Address - Country"]]
+  columns.compact!
+  columns.map! { |col|
+    col.strip.gsub(/\s{2,}/, " ")
+  }
+  joined = columns.join("  ")
 
-   return nil if joined.strip.empty?
-   joined
+  return nil if joined.strip.empty?
+  joined
 end
 
 
