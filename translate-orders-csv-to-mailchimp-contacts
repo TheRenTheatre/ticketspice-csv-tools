@@ -17,6 +17,10 @@ REQUIRED_TICKETSPICE_FIELDS = ["Page Name",
                                "Billing Address (Country)",
                                "Billing Address (Postal Code)"]
 
+                               # TODO check for at least two non-empty fields
+                               # called "Added Donation (Amount)". There's a
+                               # third that is always empty.
+
 unless ARGV.length == 1
   warn "Usage: #{$0} path/to/orders.csv\n\n"
   warn "Required fields:"
@@ -25,7 +29,7 @@ unless ARGV.length == 1
 end
 
 
-def tags_to_apply(page_name, date_selection)
+def tags_to_apply(page_name, date_selection, added_donation_amount)
   tags = []
   if date_selection.nil? # one-off events
     date = year = nil
@@ -84,10 +88,12 @@ def tags_to_apply(page_name, date_selection)
 
   elsif page_name == "Stephen Pugh in Concert"
     # One-off event: Feb 9 2022 at 8 PM
+    year = 2022
     tags << "Patrons - 2022 - Stephen Pugh in Concert"
 
   elsif page_name == "Laurel Hatfield in Concert"
     # One-off event: Feb 22 2022 at 8 PM
+    year = 2022
     tags << "Patrons - 2022 - Laurel Hatfield in Concert"
 
   elsif page_name == "Oscar Wilde and Jesus Christ Walk Into a Gay Bar" && year == 2022
@@ -138,6 +144,10 @@ def tags_to_apply(page_name, date_selection)
     raise "No handler for Page Name #{page_name.inspect} and year #{year.inspect} (parsed from #{date_selection.inspect})\n\n\n"
   end
 
+  if added_donation_amount > 0
+    tags << "Donors - #{year}"
+  end
+
   tags
 end
 
@@ -172,7 +182,8 @@ ticketspice_to_mailchimp_converter = proc { |ticketspice_header|
     "Billing Address (City)"           => "Address - City",
     "Billing Address (State/Province)" => "Address - State/Prov/Region",
     "Billing Address (Country)"        => "Address - Country",
-    "Billing Address (Postal Code)"    => "Address - Zip/Postal"
+    "Billing Address (Postal Code)"    => "Address - Zip/Postal",
+    "Added Donation (Amount)"          => "Added Donation Amount"
   )
   translation[ticketspice_header]
 }
@@ -192,7 +203,12 @@ table = CSV.parse(file_contents, headers: true,
 
 # Add two more fields
 table.each do |row|
-  row["Tags"] = tags_to_apply(row["Page Name"], row["Date Selection"]).map(&:inspect).join(",")
+  added_donation_amount = row.map { |k, v|
+    k == "Added Donation Amount" ? v : nil
+  }.compact.map(&:to_f).sum
+  row["Tags"] = tags_to_apply(row["Page Name"],
+                              row["Date Selection"],
+                              added_donation_amount).map(&:inspect).join(",")
   row["Address"] = mailchimp_style_combined_address_field_for_row(row)
 end
 
