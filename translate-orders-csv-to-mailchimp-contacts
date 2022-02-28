@@ -107,6 +107,8 @@ def tags_to_apply(page_name, date_selection, added_donation_amount)
               "Patrons - 2022 - Oscar Wilde and Jesus Christ Walk Into a Gay Bar, 3rd Week"
             when Date.parse("2022-03-13")
               "Patrons - 2022 - Oscar Wilde and Jesus Christ Walk Into a Gay Bar, 4th Week"
+            when Date.parse("2022-03-20")
+              "Patrons - 2022 - Oscar Wilde and Jesus Christ Walk Into a Gay Bar, 5th Week"
             else raise "Unknown show date for Oscar Wilde and Jesus Christ Walk Into a Gay Bar: #{date}"
             end
 
