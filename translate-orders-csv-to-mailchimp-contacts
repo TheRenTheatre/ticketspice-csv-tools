@@ -21,12 +21,15 @@ REQUIRED_TICKETSPICE_FIELDS = ["Page Name",
                                # called "Added Donation (Amount)". There's a
                                # third that is always empty.
 
-unless ARGV.length == 1
-  warn "Usage: #{$0} path/to/orders.csv\n\n"
-  warn "Required fields:"
-  warn "  - " + REQUIRED_TICKETSPICE_FIELDS.join("\n  - ")
+def warn_usage_and_abort
+  list_of_fields = [REQUIRED_TICKETSPICE_FIELDS.map(&:inspect) + ['"Added Donation (Amount)" columns']]
+  warn "\nUsage: #{$0} path/to/orders.csv\n\n" +
+       "Required fields:\n" +
+        "  - " + list_of_fields.join("\n  - ") + "\n\n"
   exit 1
 end
+
+warn_usage_and_abort unless ARGV.length == 1
 
 
 def tags_to_apply(page_name, date_selection, added_donation_amount)
@@ -196,7 +199,8 @@ file_contents = File.read(ARGV[0], encoding: 'bom|utf-8')
 header_test_csv = CSV.parse(file_contents.lines.first, headers: true)
 missing_headers = REQUIRED_TICKETSPICE_FIELDS.sort - header_test_csv.headers.sort
 if missing_headers.any?
-  raise "Your orders report is missing these required fields: #{missing_headers.inspect}"
+  warn "\n\nYour orders report is missing these required fields: #{missing_headers.inspect}"
+  warn_usage_and_abort
 end
 
 # Parse whole file and rename headers to Mailchimp's names
