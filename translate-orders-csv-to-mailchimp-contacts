@@ -187,8 +187,7 @@ ticketspice_to_mailchimp_converter = proc { |ticketspice_header|
     "Billing Address (City)"           => "Address - City",
     "Billing Address (State/Province)" => "Address - State/Prov/Region",
     "Billing Address (Country)"        => "Address - Country",
-    "Billing Address (Postal Code)"    => "Address - Zip/Postal",
-    "Added Donation (Amount)"          => "Added Donation Amount"
+    "Billing Address (Postal Code)"    => "Address - Zip/Postal"
   )
   translation[ticketspice_header]
 }
@@ -209,8 +208,8 @@ table = CSV.parse(file_contents, headers: true,
 
 # Add two more fields
 table.each do |row|
-  added_donation_amount = row.map { |k, v|
-    k == "Added Donation Amount" ? v : nil
+  added_donation_amount = row.map { |col, v|
+    col == "Added Donation (Amount)" ? v : nil
   }.compact.map(&:to_f).sum
   row["Tags"] = tags_to_apply(row["Page Name"],
                               row["Date Selection"],
