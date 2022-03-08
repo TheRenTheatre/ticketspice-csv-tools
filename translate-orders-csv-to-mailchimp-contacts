@@ -18,10 +18,8 @@ REQUIRED_TICKETSPICE_FIELDS = ["Order Number",
                                "Billing Address (State/Province)",
                                "Billing Address (Country)",
                                "Billing Address (Postal Code)"]
-
-                               # TODO check for at least two non-empty fields
-                               # called "Added Donation (Amount)". There's a
-                               # third that is always empty.
+                               # Plus a variety of "Added Donation (Amount)"
+                               # columns we check for separately
 
 def warn_usage_and_abort
   list_of_fields = [REQUIRED_TICKETSPICE_FIELDS.map(&:inspect) + ['"Added Donation (Amount)" columns']]
@@ -390,6 +388,58 @@ if missing_headers.any?
   warn "\n\nYour orders report is missing these required fields: #{missing_headers.inspect}"
   warn_usage_and_abort
 end
+
+
+def check_format_of_added_donation_columns(file_contents)
+  # There are three columns with the identical name "Added Donation (Amount)".
+  # One has data from the first shows we set up, Nosferatu and La Medéa; one
+  # has donations from the shows after that; and one is always blank. We want to
+  # make sure we have those first two.
+
+  table = CSV.parse(file_contents, headers: true)
+
+  # Nosferatu and La Medéa are in the past, so assume that if this report
+  # includes them, it's a full export and we have all the orders from those
+  # shows, including at least one each with an added donation. Check that all
+  # added donations from those shows use that column, and remember which column
+  # it was for later.
+  first_shows_donation_amounts_by_row_and_column_index = {}
+  table.each_with_index do |row, row_number|
+    if row["Page Name"] == "La Medéa" ||
+       (row["Page Name"] == "Nosferatu" && Date.parse(row["Date Selection"]).year == 2021)
+      row.each_with_index do |(col, v), col_i|
+        if col == "Added Donation (Amount)"
+          first_shows_donation_amounts_by_row_and_column_index[row_number] ||= {}
+          first_shows_donation_amounts_by_row_and_column_index[row_number][col_i] = v.to_f
+        end
+      end
+    end
+  end
+  summed_amounts_by_column_index =
+    first_shows_donation_amounts_by_row_and_column_index.reduce(Hash.new(0)) { |memo, (row_i, amounts)|
+      amounts.each { |k, v|
+        memo[k] += v.to_f
+      }
+      memo
+    }
+  # So now we should have something like this.
+  # {12=>0.0, 13=>1050.11, 14=>0.0}
+  if summed_amounts_by_column_index.count != 3
+    warn 'Expected three columns called "Added Donation (amount)"'
+    warn_usage_and_abort
+  end
+  columns_with_amounts = summed_amounts_by_column_index.select { |col_i, sum| sum > 0 }
+
+  if columns_with_amounts.count != 1
+    warn 'Expected exactly one of the three columns called "Added Donation (amount)"' +
+         'to list amounts for Nosferatu (2021) and La Medéa'
+    warn_usage_and_abort
+  end
+  old_donation_amounts_column_index = columns_with_amounts.first[0]
+
+  # TODO: Now, check that the rest of the shows use one and only one other column for this
+end
+check_format_of_added_donation_columns(file_contents)
 
 # Parse whole file and rename headers to Mailchimp's names
 table = CSV.parse(file_contents, headers: true,
