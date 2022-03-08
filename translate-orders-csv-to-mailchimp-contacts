@@ -149,7 +149,17 @@ def tags_to_apply(page_name, date_selection, added_donation_amount)
     raise "No handler for Page Name #{page_name.inspect} and year #{year.inspect} (parsed from #{date_selection.inspect})\n\n\n"
   end
 
+  # TODO: if someone buys tickets for a future show, is imported as e.g. "Week
+  # 3", then changes their tickets to "Week 2" and is imported again, they'll
+  # end up tagged with both in Mailchimp. Once this is API-based we could remove
+  # the incorrect tags, but there's no way to do that through a CSV. A quick fix
+  # would be to leave them out of the show tags until the show has happened, at
+  # the expense of not being able to target future patrons for a certain show
+  # via Mailchimp alone.
+
   if added_donation_amount > 0
+    # TODO: the donation year should come from the date of the purchase, not the
+    # date of the show
     tags << "Donors - #{year}"
   end
 
