@@ -210,7 +210,7 @@ table = CSV.parse(file_contents, headers: true,
 table.each do |row|
   added_donation_amount = row.map { |col, v|
     col == "Added Donation (Amount)" ? v : nil
-  }.compact.map(&:to_f).sum
+  }.map(&:to_f).sum
   row["Tags"] = tags_to_apply(row["Page Name"],
                               row["Date Selection"],
                               added_donation_amount).map(&:inspect).join(",")
