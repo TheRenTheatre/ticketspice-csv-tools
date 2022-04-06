@@ -182,9 +182,8 @@ def tags_to_apply(page_name, date_selection, added_donation_amount, csv_row)
 end
 
 def printable_order_summary(row)
-  first, last, order_number, date =
-    row.to_h.fetch_values("First Name", "Last Name", "Order Number", "Date Selection")
-  "#{first} #{last} - order number #{order_number} - tickets for #{date}"
+  values = row.to_h.fetch_values("First Name", "Last Name", "Order Number", "Date Selection")
+  "%s %s - order number %s - tickets for %s" % values
 end
 
 def mailchimp_style_combined_address_field_for_row(row)
