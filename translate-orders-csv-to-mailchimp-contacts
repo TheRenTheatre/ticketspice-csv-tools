@@ -32,7 +32,7 @@ end
 warn_usage_and_abort unless ARGV.length == 1
 
 
-def tags_to_apply(page_name, date_selection, added_donation_amount)
+def tags_to_apply(page_name, date_selection, added_donation_amount, csv_row)
   tags = []
   if date_selection.nil? # one-off events
     date = year = nil
@@ -113,7 +113,8 @@ def tags_to_apply(page_name, date_selection, added_donation_amount)
             when Date.parse("2022-03-20")
               "Patrons - 2022 - Oscar Wilde and Jesus Christ Walk Into a Gay Bar, 5th Week"
             when Date.parse("2022-03-27")
-              warn "Warning: we cancelled the Mar 27, 2022 show of Oscar Wilde, but there's a completed order for it"
+              warn "Warning: we cancelled the Mar 27, 2022 show of Oscar Wilde, but there's a completed order for it:\n" +
+                   "         #{printable_order_summary(csv_row)}\n\n"
               "Patrons - 2022 - Oscar Wilde and Jesus Christ Walk Into a Gay Bar, 6th Week (cancelled)"
             when Date.parse("2022-04-03")
               "Patrons - 2022 - Oscar Wilde and Jesus Christ Walk Into a Gay Bar, 7th Week"
@@ -136,7 +137,8 @@ def tags_to_apply(page_name, date_selection, added_donation_amount)
             when Date.parse("2022-03-31")..Date.parse("2022-04-03")
               "Patrons - 2022 - Gorgeous, 5th Week"
             when Date.parse("2022-04-07")..Date.parse("2022-04-10")
-              warn "Warning: we cancelled the 6th week of Gorgeous, but there's a completed order for it on #{date}"
+              warn "Warning: we cancelled the 6th week of Gorgeous, but there's a completed order for it:\n" +
+                   "         #{printable_order_summary(csv_row)}\n\n"
               "Patrons - 2022 - Gorgeous, 6th Week (cancelled)"
             else raise "Unknown show date for Gorgeous: #{date}"
             end
@@ -172,6 +174,11 @@ def tags_to_apply(page_name, date_selection, added_donation_amount)
   end
 
   tags
+end
+
+def printable_order_summary(row)
+  first, last, date = row.to_h.fetch_values("First Name", "Last Name", "Date Selection")
+  "#{first} #{last} - tickets for #{date}"
 end
 
 def mailchimp_style_combined_address_field_for_row(row)
@@ -229,9 +236,9 @@ table.each do |row|
   added_donation_amount = row.map { |col, v|
     col == "Added Donation (Amount)" ? v : nil
   }.map(&:to_f).sum
-  row["Tags"] = tags_to_apply(row["Page Name"],
-                              row["Date Selection"],
-                              added_donation_amount).map(&:inspect).join(",")
+  tags = tags_to_apply(row["Page Name"], row["Date Selection"],
+                       added_donation_amount, row)
+  row["Tags"] = tags.map(&:inspect).join(",")
   row["Address"] = mailchimp_style_combined_address_field_for_row(row)
 end
 
