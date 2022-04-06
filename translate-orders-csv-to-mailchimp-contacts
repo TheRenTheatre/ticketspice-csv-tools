@@ -117,7 +117,9 @@ def tags_to_apply(page_name, date_selection, added_donation_amount, csv_row)
                    "         #{printable_order_summary(csv_row)}\n\n"
               "Patrons - 2022 - Oscar Wilde and Jesus Christ Walk Into a Gay Bar, 6th Week (cancelled)"
             when Date.parse("2022-04-03")
-              "Patrons - 2022 - Oscar Wilde and Jesus Christ Walk Into a Gay Bar, 7th Week"
+              warn "Warning: we cancelled the Apr 3, 2022 show of Oscar Wilde, but there's a completed order for it:\n" +
+                   "         #{printable_order_summary(csv_row)}\n\n"
+              "Patrons - 2022 - Oscar Wilde and Jesus Christ Walk Into a Gay Bar, 7th Week (cancelled)"
             when Date.parse("2022-04-10")
               "Patrons - 2022 - Oscar Wilde and Jesus Christ Walk Into a Gay Bar, 8th Week"
             else raise "Unknown show date for Oscar Wilde and Jesus Christ Walk Into a Gay Bar: #{date}"
