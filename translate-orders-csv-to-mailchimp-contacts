@@ -4,7 +4,8 @@ require 'csv'
 require 'date'
 
 
-REQUIRED_TICKETSPICE_FIELDS = ["Page Name",
+REQUIRED_TICKETSPICE_FIELDS = ["Order Number",
+                               "Page Name",
                                "Date Selection",
                                "Billing Name (First Name)",
                                "Billing Name (Last Name)",
@@ -179,8 +180,9 @@ def tags_to_apply(page_name, date_selection, added_donation_amount, csv_row)
 end
 
 def printable_order_summary(row)
-  first, last, date = row.to_h.fetch_values("First Name", "Last Name", "Date Selection")
-  "#{first} #{last} - tickets for #{date}"
+  first, last, order_number, date =
+    row.to_h.fetch_values("First Name", "Last Name", "Order Number", "Date Selection")
+  "#{first} #{last} - order number #{order_number} - tickets for #{date}"
 end
 
 def mailchimp_style_combined_address_field_for_row(row)
