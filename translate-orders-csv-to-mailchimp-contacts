@@ -116,11 +116,11 @@ def tags_to_apply(page_name, date_selection, added_donation_amount, csv_row)
             when Date.parse("2022-03-27")
               warn "Warning: we cancelled the Mar 27, 2022 show of Oscar Wilde, but there's a completed order for it:\n" +
                    "         #{printable_order_summary(csv_row)}\n\n"
-              "Patrons - 2022 - Oscar Wilde and Jesus Christ Walk Into a Gay Bar, 6th Week (cancelled)"
+              nil
             when Date.parse("2022-04-03")
               warn "Warning: we cancelled the Apr 3, 2022 show of Oscar Wilde, but there's a completed order for it:\n" +
                    "         #{printable_order_summary(csv_row)}\n\n"
-              "Patrons - 2022 - Oscar Wilde and Jesus Christ Walk Into a Gay Bar, 7th Week (cancelled)"
+              nil
             when Date.parse("2022-04-10")
               "Patrons - 2022 - Oscar Wilde and Jesus Christ Walk Into a Gay Bar, 8th Week"
             else raise "Unknown show date for Oscar Wilde and Jesus Christ Walk Into a Gay Bar: #{date}"
@@ -142,7 +142,7 @@ def tags_to_apply(page_name, date_selection, added_donation_amount, csv_row)
             when Date.parse("2022-04-07")..Date.parse("2022-04-10")
               warn "Warning: we cancelled the 6th week of Gorgeous, but there's a completed order for it:\n" +
                    "         #{printable_order_summary(csv_row)}\n\n"
-              "Patrons - 2022 - Gorgeous, 6th Week (cancelled)"
+              nil
             else raise "Unknown show date for Gorgeous: #{date}"
             end
 
@@ -175,6 +175,8 @@ def tags_to_apply(page_name, date_selection, added_donation_amount, csv_row)
     # date of the show
     tags << "Donors - #{year}"
   end
+
+  tags.compact!
 
   tags
 end
