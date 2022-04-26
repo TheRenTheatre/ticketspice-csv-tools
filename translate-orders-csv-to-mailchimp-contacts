@@ -7,6 +7,7 @@ require 'date'
 REQUIRED_TICKETSPICE_FIELDS = ["Order Number",
                                "Page Name",
                                "Date Selection",
+                               "Timeslot Selection",
                                "Billing Name (First Name)",
                                "Billing Name (Last Name)",
                                "Billing Email Address",
@@ -33,7 +34,7 @@ end
 warn_usage_and_abort unless ARGV.length == 1
 
 
-def tags_to_apply(page_name, date_selection, added_donation_amount, csv_row)
+def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_amount, csv_row)
   tags = []
   if date_selection.nil? # one-off events
     date = year = nil
@@ -149,6 +150,16 @@ def tags_to_apply(page_name, date_selection, added_donation_amount, csv_row)
   elsif page_name == "Ain't Done Bad" && year == 2022
     tags << "Patrons - 2022 - Ain't Done Bad, Entire Run"
     tags << case date
+            when Date.parse("2022-04-23")
+              if timeslot_selection == "9:00 PM"
+                warn "Warning: we cancelled the 9 PM show of Ain't Done Bad on 4/23/2022, but there's a completed order for it:\n" +
+                     "         #{printable_order_summary(csv_row)}\n\n"
+                nil
+              elsif timeslot_selection == "7:00 PM"
+                "Patrons - 2022 - Ain't Done Bad, 1st Week"
+              else
+                raise "Unknown show time for Ain't Done Bad: #{timeslot_selection} on #{date}"
+              end
             when Date.parse("2022-04-21")..Date.parse("2022-04-24")
               "Patrons - 2022 - Ain't Done Bad, 1st Week"
             when Date.parse("2022-04-27")..Date.parse("2022-05-01")
@@ -241,7 +252,7 @@ table.each do |row|
   added_donation_amount = row.map { |col, v|
     col == "Added Donation (Amount)" ? v : nil
   }.map(&:to_f).sum
-  tags = tags_to_apply(row["Page Name"], row["Date Selection"],
+  tags = tags_to_apply(row["Page Name"], row["Date Selection"], row["Timeslot Selection"],
                        added_donation_amount, row)
   row["Tags"] = tags.map(&:inspect).join(",")
   row["Address"] = mailchimp_style_combined_address_field_for_row(row)
