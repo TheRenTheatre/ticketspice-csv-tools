@@ -167,7 +167,7 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
             else raise "Unknown show date for Ain't Done Bad: #{date}"
             end
 
-  elsif page_name == "From Here - In Concert" && year == 2022
+  elsif page_name == "From Here: In Concert" && year == 2022
     tags << "Patrons - 2022 - From Here: In Concert, Entire Run"
 
 
