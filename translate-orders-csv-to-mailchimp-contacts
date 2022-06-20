@@ -168,7 +168,30 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
             end
 
   elsif page_name == "From Here: In Concert" && year == 2022
+    # One weekend, but let's use "Entire Run" since it was three performances
     tags << "Patrons - 2022 - From Here: In Concert, Entire Run"
+
+  elsif page_name == "Bullock and the Bandits" && year == 2022
+    # Single show, but not set up in TicketSpice as a one-off event
+    tags << "Patrons - 2022 - Bullock and the Bandits"
+
+  elsif page_name == "Rubbed the Wrong Way Cabaret" && year == 2022
+    # Single show, but not set up in TicketSpice as a one-off event
+    tags << "Patrons - 2022 - Rubbed the Wrong Way Cabaret"
+
+  elsif page_name == "Lenox Ave" && year == 2022
+    tags << "Patrons - 2022 - Lenox Ave, Entire Run"
+    tags << case date
+            when Date.parse("2022-07-22")..Date.parse("2022-07-23")
+              "Patrons - 2022 - Lenox Ave, 1st Week"
+            when Date.parse("2022-07-29")..Date.parse("2022-07-30")
+              "Patrons - 2022 - Lenox Ave, 2nd Week"
+            when Date.parse("2022-08-05")..Date.parse("2022-08-06")
+              "Patrons - 2022 - Lenox Ave, 3rd Week"
+            when Date.parse("2022-08-12")..Date.parse("2022-08-13")
+              "Patrons - 2022 - Lenox Ave, 4th Week"
+            else raise "Unknown show date for Lenox Ave: #{date}"
+            end
 
 
   else
