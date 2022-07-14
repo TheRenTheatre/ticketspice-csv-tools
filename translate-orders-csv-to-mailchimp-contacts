@@ -175,9 +175,9 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
     # Single show, but not set up in TicketSpice as a one-off event
     tags << "Patrons - 2022 - Bullock and the Bandits"
 
-  elsif page_name == "Rubbed the Wrong Way Cabaret" && year == 2022
+  elsif page_name == "Spooky & Gay" && year == 2022
     # Single show, but not set up in TicketSpice as a one-off event
-    tags << "Patrons - 2022 - Rubbed the Wrong Way Cabaret"
+    tags << "Patrons - 2022 - Spooky & Gay"
 
   elsif page_name == "Lenox Ave" && year == 2022
     tags << "Patrons - 2022 - Lenox Ave, Entire Run"
@@ -193,6 +193,23 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
             else raise "Unknown show date for Lenox Ave: #{date}"
             end
 
+  elsif page_name == "Nosferatu" && year == 2022
+    tags << "Patrons - 2022 - Nosferatu, Entire Run"
+    tags << case date
+            when Date.parse("2022-09-23")..Date.parse("2022-09-24")
+              "Patrons - 2022 - Nosferatu, 1st Week"
+            when Date.parse("2022-09-30")..Date.parse("2022-10-01")
+              "Patrons - 2022 - Nosferatu, 2nd Week"
+            when Date.parse("2022-10-07")..Date.parse("2022-10-08")
+              "Patrons - 2022 - Nosferatu, 3rd Week"
+            when Date.parse("2022-10-14")..Date.parse("2022-10-15")
+              "Patrons - 2022 - Nosferatu, 4th Week"
+            when Date.parse("2022-10-21")..Date.parse("2022-10-22")
+              "Patrons - 2022 - Nosferatu, 5th Week"
+            when Date.parse("2022-10-28")..Date.parse("2022-10-31")
+              "Patrons - 2022 - Nosferatu, 6th Week"
+            else raise "Unknown show date for Nosferatu: #{date}"
+            end
 
   else
     warn "\n\n\n"
