@@ -2,6 +2,7 @@
 
 require 'csv'
 require 'date'
+require 'yaml'
 
 
 REQUIRED_TICKETSPICE_FIELDS = ["Order Number",
@@ -33,6 +34,12 @@ end
 
 warn_usage_and_abort unless ARGV.length == 1
 
+
+def shows
+  @shows ||= YAML.safe_load_file(File.join(File.dirname(__FILE__), "shows.yaml"), symbolize_names: true)
+end
+
+pp shows
 
 def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_amount, csv_row)
   tags = []
