@@ -6,6 +6,8 @@ require 'date'
 require 'time'
 require 'awesome_print'
 require 'active_support/core_ext/object/inclusion'
+require 'active_support/core_ext/integer/inflections'
+require 'yaml'
 
 REQUIRED_TICKETSPICE_FIELDS = ["Order Number",
                                "Date Completed",
@@ -38,6 +40,19 @@ end
 warn_usage_and_abort unless ARGV.length == 1
 
 
+def shows
+  return @shows if defined?(@shows)
+
+  @shows = YAML.safe_load_file(File.join(File.dirname(__FILE__), "shows.yaml"), symbolize_names: true)
+  @shows.each do |show|
+    show[:weeks].transform_values! do |days|
+      Date.parse(days.first)..Date.parse(days.last)
+    end
+  end
+  @shows
+end
+
+
 def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed, added_donation_amount, csv_row)
   tags = []
   if date_selection.nil? # one-off events
@@ -47,7 +62,22 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     year = date.year
   end
 
-  if page_name == "Nosferatu" && year == 2021
+  show = shows.select { |s|
+    s[:name] == page_name && s[:year] == year && s[:weeks].any? { |week_num, week_range| date.in?(week_range) }
+  }
+  if show.count > 1
+    raise "More than one show matched"
+  elsif show.count == 1
+    show = show.first
+    tags << "Patrons - #{year} - #{page_name}, Entire Run"
+    show[:weeks].each do |week_num, week_range|
+      if date.in?(week_range)
+        tags << "Patrons - #{year} - #{page_name}, #{week_num.ordinalize} Week"
+        break
+      end
+    end
+
+  elsif page_name == "Nosferatu" && year == 2021
     tags << "Patrons - 2021 - Nosferatu, Entire Run"
     tags << case date
             when Date.parse("2021-10-01")..Date.parse("2021-10-02")
