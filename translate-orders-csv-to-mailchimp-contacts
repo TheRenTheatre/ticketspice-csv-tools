@@ -188,7 +188,7 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
               "Patrons - 2022 - Lenox Ave, 2nd Week"
             when Date.parse("2022-08-05")..Date.parse("2022-08-06")
               "Patrons - 2022 - Lenox Ave, 3rd Week"
-            when Date.parse("2022-08-12")..Date.parse("2022-08-13")
+            when Date.parse("2022-08-12")..Date.parse("2022-08-14")
               "Patrons - 2022 - Lenox Ave, 4th Week"
             else raise "Unknown show date for Lenox Ave: #{date}"
             end
