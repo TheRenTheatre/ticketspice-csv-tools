@@ -978,6 +978,11 @@ end
 table = CSV.parse(file_contents, headers: true,
                                  header_converters: ticketspice_to_mailchimp_converter)
 
+# Only consider orders after this time
+table.delete_if { |row|
+  Time.parse(row["Date Completed"]) < Time.parse("2023-05-05 12:00 AM")
+}
+
 # Collapse duplicate fields; convert mailing address; add tags
 table.each do |row|
   added_donation_amount = row.map { |col, value|
@@ -1007,6 +1012,7 @@ table.each do |row|
                        date_completed, added_donation_amount, row)
   row["Address"] = mailchimp_style_combined_address_field_for_row(row)
   row["Tags"] = tags
+  row["Donations"] = added_donation_amount
 end
 
 
@@ -1028,35 +1034,92 @@ table.delete_if { |header, _data|
   !["First Name", "Last Name", "Email Address", "Phone", "Address", "Tags"].include?(header)
 }
 
-
+# HEAD version:
 # Construct a new table where we only have one entry for each unique
 # combination of name/email/phone/address, de-duping that person's tags as we go
-personal_info_mapped_to_tags = Hash.new { |hash, key| hash[key] = [] }
-table.by_row!
-table.each do |row|
-  key = [row["First Name"], row["Last Name"], row["Email Address"], row["Phone"], row["Address"]]
-  personal_info_mapped_to_tags[key].concat(row["Tags"]).uniq!
-end
+# personal_info_mapped_to_tags = Hash.new { |hash, key| hash[key] = [] }
+# table.by_row!
+# table.each do |row|
+#   key = [row["First Name"], row["Last Name"], row["Email Address"], row["Phone"], row["Address"]]
+#   personal_info_mapped_to_tags[key].concat(row["Tags"]).uniq!
+# end
+#
+# output_string = CSV.generate do |csv|
+#   csv << ["First Name", "Last Name", "Email Address", "Phone", "Address", "Tags"]
+#   personal_info_mapped_to_tags.each_pair do |personal_info, tags|
+#     # Surround single tags in quotes only when they contain commas
+#     # https://mailchimp.com/help/format-guidelines-for-your-import-file/
+#     formatted_tags_field = tags.map { |t|
+#       if t.include?(",")
+#         "\"#{t}\""
+#       else
+#         t
+#       end
+#     }.join(",")
+#     csv << personal_info.push(formatted_tags_field)
+#   end
+# end
+#
+# puts output_string
+#
+# warn "Done.\n\n"
 
-output_string = CSV.generate do |csv|
-  csv << ["First Name", "Last Name", "Email Address", "Phone", "Address", "Tags"]
-  personal_info_mapped_to_tags.each_pair do |personal_info, tags|
-    # Surround single tags in quotes only when they contain commas
-    # https://mailchimp.com/help/format-guidelines-for-your-import-file/
-    formatted_tags_field = tags.map { |t|
-      if t.include?(",")
-        "\"#{t}\""
-      else
-        t
-      end
-    }.join(",")
-    csv << personal_info.push(formatted_tags_field)
+table.by_row!
+stats_by_email = table.group_by { |row| row["Email Address"] }.
+                       reduce({}) { |memo, (email, rows)|
+  cols_for_email = {}
+  rows.reverse.each do |row|
+    row.each do |col, val|
+      cols_for_email[col] ||= []
+      cols_for_email[col].push(*[val].flatten)
+    end
+  end
+  cols_for_email.each_pair { |col, vals|
+    cols_for_email[col].uniq! { |v|
+      v.nil? ? nil : v.downcase.delete(",.").strip.squeeze(" ")
+    }
+    cols_for_email[col].compact!
+  }
+  cols_for_email["Tags"] = cols_for_email["Tags"].uniq.reject { |t|
+    t =~ /^Donors|Week$/ || t =~ /The Ren Sings, All/ || t =~ /Bullock and the Bandits, All Shows/
+  }.map { |t|
+    t.sub(/^Patrons - /, "").sub(/, Entire Run$/, "").sub(/^(202[123]) - (.+)$/, '\2 - \1')
+  }
+  cols_for_email["Show Count"] = cols_for_email["Tags"].count
+  cols_for_email["Order Count"] = rows.count
+
+  memo[email] = cols_for_email
+  memo
+}
+
+
+arr = stats_by_email.sort_by { |email, row|
+  [-row["Show Count"], row["Last Name"]]
+}.map { |email, row|
+  row.transform_values { |vals|
+    if vals.is_a?(Numeric)
+      vals
+    elsif vals.one?
+      vals.first
+    else
+      vals.join("\n")
+    end
+  }
+}
+
+# Cutoff for the long tail of data
+arr.delete_if { |row|
+  row["Show Count"] < 5
+}
+
+output = CSV.generate do |csv|
+  csv << arr.first.keys
+  arr.each do |row|
+    csv << row.values
   end
 end
+puts output
 
-puts output_string
-
-warn "Done.\n\n"
 # TODO we can probably downcase everything when comparing for uniqueness (but
 # careful, currently the keys ARE the data so we would need to separate that
 # out)
