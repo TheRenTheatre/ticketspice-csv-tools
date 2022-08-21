@@ -297,7 +297,8 @@ table.each do |row|
   }.map(&:to_f).sum
   tags = tags_to_apply(row["Page Name"], row["Date Selection"], row["Timeslot Selection"],
                        added_donation_amount, row)
-  row["Tags"] = tags.map(&:inspect).join(",")
+  row["Tags"] = tags
+  row["Donations"] = added_donation_amount
   row["Address"] = mailchimp_style_combined_address_field_for_row(row)
 end
 
@@ -307,8 +308,55 @@ table.delete_if { |header, data|
   !["First Name", "Last Name", "Email Address", "Phone", "Address", "Tags"].include?(header)
 }
 
+table.by_row!
+stats_by_email = table.group_by { |row| row["Email Address"] }.
+                       reduce({}) { |memo, (email, rows)|
+  memo[email] ||= {}
+  rows.reverse.each do |row|
+    row.each do |col, val|
+      memo[email][col] ||= []
+      memo[email][col].push(*[val].flatten)
+    end
+  end
+  memo[email].each_pair { |col, vals|
+    memo[email][col].uniq! { |v|
+      v.nil? ? nil : v.downcase.delete(",.").strip.squeeze(" ")
+    }
+    memo[email][col].compact!
+  }
+  memo[email]["Tags"] = memo[email]["Tags"].uniq.reject { |t|
+    t =~ /^Donors|Week$/
+  }.map { |t|
+    t.sub(/^Patrons - /, "").sub(/, Entire Run$/, "").sub(/^(202[12]) - (.+)$/, '\2 \1')
+  }
+  memo[email]["Show Count"] = memo[email]["Tags"].count
+  memo[email]["Order Count"] = rows.count
+  memo
+}
 
-puts table.to_s
+
+arr = stats_by_email.sort_by { |email, row|
+  [-row["Show Count"], row["Last Name"]]
+}.map { |email, row|
+  row.transform_values { |vals|
+    if vals.is_a?(Numeric)
+      vals
+    elsif vals.one?
+      vals.first
+    else
+      vals.join("\n")
+    end
+  }
+}
+
+output = CSV.generate do |csv|
+  csv << arr.first.keys
+  arr.each do |row|
+    csv << row.values
+  end
+end
+puts output
+
 
 # TODO Okay that was good but it should unique them on email, join their tags, and prompt when the
 # name/address/phone is different or something.
