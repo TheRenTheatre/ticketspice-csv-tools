@@ -211,9 +211,17 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
             else raise "Unknown show date for Nosferatu: #{date}"
             end
 
+  elsif page_name == "MX OTR The Pageant Experience" && year == 2022
+    # Single show, but not set up in TicketSpice as a one-off event
+    tags << "Patrons - 2022 - MX OTR The Pageant Experience"
+
   elsif page_name == "Winnie's Rock Cauldron Cabaret" && year == 2022
     # Single show, but not set up in TicketSpice as a one-off event
     tags << "Patrons - 2022 - Winnie's Rock Cauldron Cabaret"
+
+  elsif page_name == "A Halloween Carol" && year == 2022
+    # Single show, but not set up in TicketSpice as a one-off event
+    tags << "Patrons - 2022 - A Halloween Carol"
 
   elsif page_name == "The Office Holiday Party Musical Extravaganza Show" && year == 2022
     tags << "Patrons - 2022 - The Office Holiday Party Musical Extravaganza Show, Entire Run"
