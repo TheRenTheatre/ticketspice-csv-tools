@@ -172,8 +172,18 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
     tags << "Patrons - 2022 - From Here: In Concert, Entire Run"
 
   elsif page_name == "Bullock and the Bandits" && year == 2022
-    # Single show, but not set up in TicketSpice as a one-off event
-    tags << "Patrons - 2022 - Bullock and the Bandits"
+    tags << "Patrons - 2022 - Bullock and the Bandits, All Shows"
+    tags << case date
+            when Date.parse("2022-07-01")
+              "Patrons - 2022 - Bullock and the Bandits, Jul 1"
+            when Date.parse("2022-10-05")
+              "Patrons - 2022 - Bullock and the Bandits, Oct 5"
+            when Date.parse("2022-10-12")
+              "Patrons - 2022 - Bullock and the Bandits, Oct 12"
+            when Date.parse("2022-10-19")
+              "Patrons - 2022 - Bullock and the Bandits, Oct 19"
+            else raise "Unknown show date for #{page_name}: #{date}"
+            end
 
   elsif page_name == "Spooky & Gay" && year == 2022
     # Single show, but not set up in TicketSpice as a one-off event
@@ -222,6 +232,10 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
   elsif page_name == "A Halloween Carol" && year == 2022
     # Single show, but not set up in TicketSpice as a one-off event
     tags << "Patrons - 2022 - A Halloween Carol"
+
+  elsif page_name == "Hexed A Femme Rock Musical" && year == 2022
+    # Single show, but not set up in TicketSpice as a one-off event
+    tags << "Patrons - 2022 - Hexed"
 
   elsif page_name == "The Office Holiday Party Musical Extravaganza Show" && year == 2022
     tags << "Patrons - 2022 - The Office Holiday Party Musical Extravaganza Show, Entire Run"
