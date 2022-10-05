@@ -234,8 +234,7 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
     tags << "Patrons - 2022 - A Halloween Carol"
 
   elsif page_name == "Hexed A Femme Rock Musical" && year == 2022
-    # Single show, but not set up in TicketSpice as a one-off event
-    tags << "Patrons - 2022 - Hexed"
+    tags << "Patrons - 2022 - Hexed, Entire Run"
 
   elsif page_name == "The Office Holiday Party Musical Extravaganza Show" && year == 2022
     tags << "Patrons - 2022 - The Office Holiday Party Musical Extravaganza Show, Entire Run"
