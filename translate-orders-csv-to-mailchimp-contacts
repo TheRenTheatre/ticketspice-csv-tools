@@ -216,8 +216,10 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
               "Patrons - 2022 - Nosferatu, 4th Week"
             when Date.parse("2022-10-21")..Date.parse("2022-10-22")
               "Patrons - 2022 - Nosferatu, 5th Week"
-            when Date.parse("2022-10-28")..Date.parse("2022-10-31")
+            when Date.parse("2022-10-27")..Date.parse("2022-10-31")
               "Patrons - 2022 - Nosferatu, 6th Week"
+            when Date.parse("2022-11-03")..Date.parse("2022-11-05")
+              "Patrons - 2022 - Nosferatu, 7th Week"
             else raise "Unknown show date for Nosferatu: #{date}"
             end
 
