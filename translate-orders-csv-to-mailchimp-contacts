@@ -238,9 +238,9 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
   elsif page_name == "Hexed A Femme Rock Musical" && year == 2022
     tags << "Patrons - 2022 - Hexed, Entire Run"
 
-  elsif page_name == "ASL Slam" && year == 2022
-    # Single show, but not set up in TicketSpice as a one-off event
-    tags << "Patrons - 2022 - ASL Slam"
+  elsif page_name == "ASL Slam" && (year == 2022 || year == 2023)
+    # Two single shows, not really sure how to tag these yet so we'll just keep with the year for now
+    tags << "Patrons - #{year} - ASL Slam"
 
   elsif page_name == "The Office Holiday Party Musical Extravaganza Show" && year == 2022
     tags << "Patrons - 2022 - The Office Holiday Party Musical Extravaganza Show, Entire Run"
@@ -256,6 +256,10 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
             else raise "Unknown show date for Office Party: #{date}"
             end
 
+  elsif page_name == "Black & White Night" && year == 2022
+    # Single event, but not set up in TicketSpice as a one-off event
+    tags << "Patrons - 2022 - Black & White Night"
+
   elsif page_name == "6 Guitars" && year == 2023
     tags << "Patrons - 2023 - 6 Guitars, Entire Run"
     tags << case date
@@ -269,6 +273,11 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
               "Patrons - 2023 - 6 Guitars, 4th Week"
             else raise "Unknown show date for 6 Guitars: #{date}"
             end
+
+  elsif page_name == "From Here: In Orlando" && year == 2023
+    # Two shows on one day; sanity check for future similar show names
+    raise "Unexpected date for #{page_name}: #{date}" unless date == Date.parse("2023-01-17")
+    tags << "Patrons - 2023 - From Here: In Orlando"
 
   else
     warn "\n\n\n"
