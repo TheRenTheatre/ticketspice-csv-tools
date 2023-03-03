@@ -304,6 +304,18 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
             else raise "Unknown show date for Josephine: #{date}"
             end
 
+  elsif page_name == "Sincerely, Three: Live at The Ren" && year == 2023
+    # Single performance, but not set up in TicketSpice as a one-off event;
+    # catch any future shows
+    raise "Unexpected date for #{page_name}: #{date}" unless date == Date.parse("2023-03-01")
+    tags << "Patrons - 2023 - Sincerely, Three: Live at The Ren"
+
+  elsif page_name == "Sessions at the Ren" && year == 2023
+    # Ongoing series, but only one so far; catch any future shows to maybe tag
+    # differently
+    raise "Unexpected date for #{page_name}: #{date}" unless date == Date.parse("2023-03-04")
+    tags << "Patrons - 2023 - Sessions at the Ren"
+
   else
     warn "\n\n\n"
     raise "No handler for Page Name #{page_name.inspect} and year #{year.inspect} (parsed from #{date_selection.inspect})\n\n\n"
