@@ -402,8 +402,8 @@ table.each do |row|
   }.map(&:to_f).sum
   tags = tags_to_apply(row["Page Name"], row["Date Selection"], row["Timeslot Selection"],
                        added_donation_amount, row)
-  row["Tags"] = tags.map(&:inspect).join(",")
   row["Address"] = mailchimp_style_combined_address_field_for_row(row)
+  row["Tags"] = tags.map(&:inspect).join(",")
 end
 
 # Finally, generate a new one that only includes the fields they want
