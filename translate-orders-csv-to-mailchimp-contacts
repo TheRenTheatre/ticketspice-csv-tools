@@ -403,7 +403,7 @@ table.each do |row|
   tags = tags_to_apply(row["Page Name"], row["Date Selection"], row["Timeslot Selection"],
                        added_donation_amount, row)
   row["Address"] = mailchimp_style_combined_address_field_for_row(row)
-  row["Tags"] = tags.map(&:inspect).join(",")
+  row["Tags"] = tags
 end
 
 # Finally, generate a new one that only includes the fields they want
@@ -413,7 +413,27 @@ table.delete_if { |header, data|
 }
 
 
-puts table.to_s
+# Construct a new table where we only have one entry for each unique
+# combination of name/email/phone/address, de-duping that person's tags as we go
+personal_info_mapped_to_tags = Hash.new { |hash, key| hash[key] = [] }
+table.by_row!
+table.each do |row|
+  key = [row["First Name"], row["Last Name"], row["Email Address"], row["Phone"], row["Address"]]
+  personal_info_mapped_to_tags[key].concat(row["Tags"]).uniq!
+end
 
-# TODO Okay that was good but it should unique them on email, join their tags, and prompt when the
-# name/address/phone is different or something.
+output_string = CSV.generate do |csv|
+  csv << ["First Name", "Last Name", "Email Address", "Phone", "Address", "Tags"]
+  personal_info_mapped_to_tags.each_pair do |personal_info, tags|
+    formatted_tags_field = tags.map(&:inspect).join(",")
+    csv << personal_info.push(formatted_tags_field)
+  end
+end
+
+puts output_string.to_s
+
+# TODO we can probably downcase everything when comparing for uniqueness (but
+# careful, currently the keys ARE the data so we would need to separate that
+# out)
+# TODO the true unique value for MailChimp is the email address; this could
+# resolve the collisions in the rest of the data.
