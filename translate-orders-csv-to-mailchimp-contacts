@@ -280,9 +280,15 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
     tags << "Patrons - 2023 - From Here: In Orlando"
 
   elsif page_name == "The Ren Sings" && year == 2023
-    # Single show; catch any future shows in the series
-    raise "Unexpected date for #{page_name}: #{date}" unless date == Date.parse("2023-02-18")
-    tags << "Patrons - 2023 - The Ren Sings"
+    # Intermittent series; make sure we catch any future shows
+    tags << "Patrons - 2023 - The Ren Sings, All"
+    if date == Date.parse("2023-02-18")
+      tags << "Patrons - 2023 - The Ren Sings Mariah Carey"
+    elsif date == Date.parse("2023-03-31")
+      tags << "Patrons - 2023 - The Ren Sings Celine Dion"
+    else
+      raise "Unexpected date for #{page_name}: #{date}"
+    end
 
   elsif page_name == "Monster Cabaret" && year == 2023
     # Single show; catch any future shows in the series
@@ -315,6 +321,35 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
     # differently
     raise "Unexpected date for #{page_name}: #{date}" unless date == Date.parse("2023-03-04")
     tags << "Patrons - 2023 - Sessions at the Ren"
+
+  elsif page_name == "Circles of Hell: A Staged Workshop" && year == 2023
+    # Two show run
+    raise "Unexpected date for #{page_name}: #{date}" unless (Date.parse("2023-03-24")..Date.parse("2023-03-25")).include?(date)
+    tags << "Patrons - 2023 - Circles of Hell: A Staged Workshop"
+
+  elsif page_name == "Mood" && year == 2023
+    # Ongoing series, but only one so far; catch any future shows to maybe tag
+    # differently
+    raise "Unexpected date for #{page_name}: #{date}" unless date == Date.parse("2023-03-25")
+    tags << "Patrons - 2023 - Mood"
+
+  elsif page_name == "Titan After Party" && year == 2023
+    # Seems like a typo, let's wait until the page name changes
+    warn "Skipping for now: #{page_name}: #{date} - #{csv_row['First Name']} #{csv_row['Last Name']} order"
+
+  elsif page_name == "The Cocaine Play" && year == 2023
+    tags << "Patrons - 2023 - The Cocaine Play, Entire Run"
+    tags << case date
+            when Date.parse("2023-04-13")..Date.parse("2023-04-15")
+              "Patrons - 2023 - The Cocaine Play, 1st Week"
+            when Date.parse("2023-04-20")..Date.parse("2023-04-22")
+              "Patrons - 2023 - The Cocaine Play, 2nd Week"
+            when Date.parse("2023-04-27")..Date.parse("2023-04-29")
+              "Patrons - 2023 - The Cocaine Play, 3rd Week"
+            when Date.parse("2023-05-04")..Date.parse("2023-05-06")
+              "Patrons - 2023 - The Cocaine Play, 4th Week"
+            else raise "Unknown show date for The Cocaine Play: #{date}"
+            end
 
   else
     warn "\n\n\n"
