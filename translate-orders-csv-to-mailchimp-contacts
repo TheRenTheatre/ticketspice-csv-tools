@@ -334,8 +334,7 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
     tags << "Patrons - 2023 - Mood"
 
   elsif page_name == "Titan After Party" && year == 2023
-    # Seems like a typo, let's wait until the page name changes
-    warn "Skipping for now: #{page_name}: #{date} - #{csv_row['First Name']} #{csv_row['Last Name']} order"
+    tags << "Patrons - 2023 - Dragula Titans Tour After-Party"
 
   elsif page_name == "The Cocaine Play" && year == 2023
     tags << "Patrons - 2023 - The Cocaine Play, Entire Run"
@@ -350,6 +349,19 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
               "Patrons - 2023 - The Cocaine Play, 4th Week"
             else raise "Unknown show date for The Cocaine Play: #{date}"
             end
+
+  elsif (page_name == "Ren Fair Merchants" || page_name == "Outside Ren Fair Merchants") && year == 2023
+    tags << "Merchants - 2023 - Renaissance Fair"
+
+  elsif page_name == "I Love Liz"
+    # One-off event: Apr 18 2023 at 8 PM
+    year = 2023
+    tags << "Patrons - 2023 - I Love Liz"
+
+  elsif page_name == "Cabaret Superstar 2023"
+    # Event series: Apr 3, Apr 10, Apr 17, Apr 24, and May 1, 2023
+    year = 2023
+    tags << "Patrons - 2023 - Musical Mondays, Next Cabaret Superstar"
 
   else
     warn "\n\n\n"
