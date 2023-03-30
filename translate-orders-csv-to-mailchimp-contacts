@@ -391,6 +391,7 @@ end
 
 def printable_order_summary(row)
   values = row.to_h.fetch_values("First Name", "Last Name", "Order Number", "Date Selection")
+  values[3] ||= "(no date)"
   "%s %s - order number %s - tickets for %s" % values
 end
 
