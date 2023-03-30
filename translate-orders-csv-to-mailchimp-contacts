@@ -19,9 +19,9 @@ REQUIRED_TICKETSPICE_FIELDS = ["Order Number",
                                "Billing Address (Country)",
                                "Billing Address (Postal Code)"]
 
-                               # TODO check for at least two non-empty fields
-                               # called "Added Donation (Amount)". There's a
-                               # third that is always empty.
+                               # TODO check for the two other Phone Number
+                               # fields and the four versions of the
+                               # "Added Donation ($ Amount)" field.
 
 def warn_usage_and_abort
   list_of_fields = [REQUIRED_TICKETSPICE_FIELDS.map(&:inspect) + ['"Added Donation (Amount)" columns']]
@@ -412,21 +412,25 @@ def mailchimp_style_combined_address_field_for_row(row)
   joined
 end
 
-
+col_num = 0
 ticketspice_to_mailchimp_converter = proc { |ticketspice_header|
   translation = Hash.new { |h, key| h[key] = key; key }
   translation.merge!(
     "Billing Name (First Name)"        => "First Name",
     "Billing Name (Last Name)"         => "Last Name",
     "Billing Email Address"            => "Email Address",
-    "Billing Phone Number"             => "Phone",
+    "Billing Phone Number"             => "Phone #{col_num}",
+    "Phone Number"                     => "Phone #{col_num}",
     "Billing Address (Address 1)"      => "Address - Street Address",
     "Billing Address (Address 2)"      => "Address - Address Line 2",
     "Billing Address (City)"           => "Address - City",
     "Billing Address (State/Province)" => "Address - State/Prov/Region",
     "Billing Address (Country)"        => "Address - Country",
-    "Billing Address (Postal Code)"    => "Address - Zip/Postal"
+    "Billing Address (Postal Code)"    => "Address - Zip/Postal",
+    "Added Donation ($ Amount)"        => "Added Donation (Amount) #{col_num}",
+    "Donation Amount ($ Amount)"       => "Added Donation (Amount) #{col_num}"
   )
+  col_num += 1
   translation[ticketspice_header]
 }
 
@@ -440,15 +444,31 @@ if missing_headers.any?
   warn_usage_and_abort
 end
 
+
 # Parse whole file and rename headers to Mailchimp's names
 table = CSV.parse(file_contents, headers: true,
                                  header_converters: ticketspice_to_mailchimp_converter)
 
-# Add two more fields
+# Collapse duplicate fields; convert mailing address; add tags
 table.each do |row|
-  added_donation_amount = row.map { |col, v|
-    col == "Added Donation (Amount)" ? v : nil
-  }.map(&:to_f).sum
+  added_donation_amount = row.map { |col, value|
+    value.to_f if col.start_with?("Added Donation (Amount)")
+  }.compact.sum
+
+  phones = row.map { |col, value|
+    if col.start_with?("Phone")
+      if value =~ /^1(\d{3})(\d{3})(\d{4})$/
+        "(%s) %s-%s" % Regexp.last_match[1..3]
+      else
+        value
+      end
+    else
+      nil
+    end
+  }.compact.uniq
+  warn "  - warning: more than one Phone for order #{row["Order Number"].inspect}: #{phones.inspect}" if phones.count > 1
+  row["Phone"] = phones.first
+
   tags = tags_to_apply(row["Page Name"], row["Date Selection"], row["Timeslot Selection"],
                        added_donation_amount, row)
   row["Address"] = mailchimp_style_combined_address_field_for_row(row)
