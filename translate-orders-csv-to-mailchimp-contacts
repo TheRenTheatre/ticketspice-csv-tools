@@ -376,6 +376,8 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
   # the expense of not being able to target future patrons for a certain show
   # via Mailchimp alone.
 
+  raise "Error: year wasn't set for order: #{printable_order_summary(csv_row)}" if year.nil?
+
   if added_donation_amount > 0
     # TODO: the donation year should come from the date of the purchase, not the
     # date of the show
