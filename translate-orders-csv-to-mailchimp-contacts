@@ -3,6 +3,7 @@
 require 'csv'
 require 'date'
 require 'awesome_print'
+require 'active_support/core_ext/object/inclusion'
 
 REQUIRED_TICKETSPICE_FIELDS = ["Order Number",
                                "Page Name",
@@ -242,6 +243,10 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
     # Two single shows, not really sure how to tag these yet so we'll just keep with the year for now
     tags << "Patrons - #{year} - ASL Slam"
 
+  elsif page_name == "ASL Slam 3" && year.nil?
+    year = 2023
+    tags << "Patrons - 2023 - ASL Slam"
+
   elsif page_name == "The Office Holiday Party Musical Extravaganza Show" && year == 2022
     tags << "Patrons - 2022 - The Office Holiday Party Musical Extravaganza Show, Entire Run"
     tags << case date
@@ -279,13 +284,15 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
     raise "Unexpected date for #{page_name}: #{date}" unless date == Date.parse("2023-01-17")
     tags << "Patrons - 2023 - From Here: In Orlando"
 
-  elsif page_name == "The Ren Sings" && year == 2023
+  elsif (page_name == "The Ren Sings" || page_name == "The Ren Sings Dolly") && year == 2023
     # Intermittent series; make sure we catch any future shows
     tags << "Patrons - 2023 - The Ren Sings, All"
     if date == Date.parse("2023-02-18")
       tags << "Patrons - 2023 - The Ren Sings Mariah Carey"
     elsif date == Date.parse("2023-03-31")
       tags << "Patrons - 2023 - The Ren Sings Celine Dion"
+    elsif date == Date.parse("2023-05-03")
+      tags << "Patrons - 2023 - The Ren Sings Dolly Parton"
     else
       raise "Unexpected date for #{page_name}: #{date}"
     end
@@ -316,10 +323,9 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
     raise "Unexpected date for #{page_name}: #{date}" unless date == Date.parse("2023-03-01")
     tags << "Patrons - 2023 - Sincerely, Three: Live at The Ren"
 
-  elsif page_name == "Sessions at the Ren" && year == 2023
-    # Ongoing series, but only one so far; catch any future shows to maybe tag
-    # differently
-    raise "Unexpected date for #{page_name}: #{date}" unless date == Date.parse("2023-03-04")
+  elsif (page_name == "Sessions at the Ren" || page_name == "Sessions 2.0") && year == 2023
+    # Ongoing series, only two shows so far, keep them together for now
+    raise "Unexpected date for #{page_name}: #{date}" unless date.in?([Date.parse("2023-03-04"), Date.parse("2023-04-19")])
     tags << "Patrons - 2023 - Sessions at the Ren"
 
   elsif page_name == "Circles of Hell: A Staged Workshop" && year == 2023
@@ -339,7 +345,11 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
   elsif page_name == "The Cocaine Play" && year == 2023
     tags << "Patrons - 2023 - The Cocaine Play, Entire Run"
     tags << case date
-            when Date.parse("2023-04-13")..Date.parse("2023-04-15")
+            when Date.parse("2023-04-13")
+              warn "  - warning: we moved the Apr 13, 2023 show of The Cocaine Play, but there's a completed order for it:\n" +
+                   "             #{printable_order_summary(csv_row)}\n\n"
+              nil
+            when Date.parse("2023-04-14")..Date.parse("2023-04-15")
               "Patrons - 2023 - The Cocaine Play, 1st Week"
             when Date.parse("2023-04-20")..Date.parse("2023-04-22")
               "Patrons - 2023 - The Cocaine Play, 2nd Week"
