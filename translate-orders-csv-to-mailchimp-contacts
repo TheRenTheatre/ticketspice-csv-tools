@@ -116,12 +116,12 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
             when Date.parse("2022-03-20")
               "Patrons - 2022 - Oscar Wilde and Jesus Christ Walk Into a Gay Bar, 5th Week"
             when Date.parse("2022-03-27")
-              warn "Warning: we cancelled the Mar 27, 2022 show of Oscar Wilde, but there's a completed order for it:\n" +
-                   "         #{printable_order_summary(csv_row)}\n\n"
+              warn "  - warning: we cancelled the Mar 27, 2022 show of Oscar Wilde, but there's a completed order for it:\n" +
+                   "             #{printable_order_summary(csv_row)}\n\n"
               nil
             when Date.parse("2022-04-03")
-              warn "Warning: we cancelled the Apr 3, 2022 show of Oscar Wilde, but there's a completed order for it:\n" +
-                   "         #{printable_order_summary(csv_row)}\n\n"
+              warn "  - warning: we cancelled the Apr 3, 2022 show of Oscar Wilde, but there's a completed order for it:\n" +
+                   "             #{printable_order_summary(csv_row)}\n\n"
               nil
             when Date.parse("2022-04-10")
               "Patrons - 2022 - Oscar Wilde and Jesus Christ Walk Into a Gay Bar, 8th Week"
@@ -142,8 +142,8 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
             when Date.parse("2022-03-31")..Date.parse("2022-04-03")
               "Patrons - 2022 - Gorgeous, 5th Week"
             when Date.parse("2022-04-07")..Date.parse("2022-04-10")
-              warn "Warning: we cancelled the 6th week of Gorgeous, but there's a completed order for it:\n" +
-                   "         #{printable_order_summary(csv_row)}\n\n"
+              warn "  - warning: we cancelled the 6th week of Gorgeous, but there's a completed order for it:\n" +
+                   "             #{printable_order_summary(csv_row)}\n\n"
               nil
             else raise "Unknown show date for Gorgeous: #{date}"
             end
@@ -153,8 +153,8 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
     tags << case date
             when Date.parse("2022-04-23")
               if timeslot_selection == "9:00 PM"
-                warn "Warning: we cancelled the 9 PM show of Ain't Done Bad on 4/23/2022, but there's a completed order for it:\n" +
-                     "         #{printable_order_summary(csv_row)}\n\n"
+                warn "  - warning: we cancelled the 9 PM show of Ain't Done Bad on 4/23/2022, but there's a completed order for it:\n" +
+                     "             #{printable_order_summary(csv_row)}\n\n"
                 nil
               elsif timeslot_selection == "7:00 PM"
                 "Patrons - 2022 - Ain't Done Bad, 1st Week"
