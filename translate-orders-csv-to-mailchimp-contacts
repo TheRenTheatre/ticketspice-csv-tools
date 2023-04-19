@@ -304,7 +304,7 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
 
   elsif page_name == "Beacon Street: A New Musical" && year == 2023
     # Two show run; catch future runs
-    raise "Unexpected date for #{page_name}: #{date}" unless (Date.parse("2023-02-24")..Date.parse("2023-02-25")).include?(date)
+    raise "Unexpected date for #{page_name}: #{date}" unless date.in?(Date.parse("2023-02-24")..Date.parse("2023-02-25"))
     tags << "Patrons - 2023 - Beacon Street: A New Musical"
 
   elsif page_name == "Josephine" && year == 2023
@@ -330,7 +330,7 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
 
   elsif page_name == "Circles of Hell: A Staged Workshop" && year == 2023
     # Two show run
-    raise "Unexpected date for #{page_name}: #{date}" unless (Date.parse("2023-03-24")..Date.parse("2023-03-25")).include?(date)
+    raise "Unexpected date for #{page_name}: #{date}" unless date.in?(Date.parse("2023-03-24")..Date.parse("2023-03-25"))
     tags << "Patrons - 2023 - Circles of Hell: A Staged Workshop"
 
   elsif page_name == "Mood" && year == 2023
