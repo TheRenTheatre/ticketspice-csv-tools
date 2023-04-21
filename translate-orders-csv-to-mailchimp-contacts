@@ -339,6 +339,11 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
     raise "Unexpected date for #{page_name}: #{date}" unless date == Date.parse("2023-03-25")
     tags << "Patrons - 2023 - Mood"
 
+  elsif page_name == "Mood" && year.nil?
+    year = 2023
+    # Like so.
+    tags << "Patrons - 2023 - Mood"
+
   elsif page_name == "Titan After Party" && year == 2023
     tags << "Patrons - 2023 - Dragula Titans Tour After-Party"
 
