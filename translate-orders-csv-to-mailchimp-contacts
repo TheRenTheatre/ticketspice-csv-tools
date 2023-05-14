@@ -2,10 +2,12 @@
 
 require 'csv'
 require 'date'
+require 'time'
 require 'awesome_print'
 require 'active_support/core_ext/object/inclusion'
 
 REQUIRED_TICKETSPICE_FIELDS = ["Order Number",
+                               "Date Completed",
                                "Page Name",
                                "Date Selection",
                                "Timeslot Selection",
@@ -35,7 +37,7 @@ end
 warn_usage_and_abort unless ARGV.length == 1
 
 
-def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_amount, csv_row)
+def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed, added_donation_amount, csv_row)
   tags = []
   if date_selection.nil? # one-off events
     date = year = nil
@@ -420,9 +422,7 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
   raise "Error: year wasn't set for order: #{printable_order_summary(csv_row)}" if year.nil?
 
   if added_donation_amount > 0
-    # TODO: the donation year should come from the date of the purchase, not the
-    # date of the show
-    tags << "Donors - #{year}"
+    tags << "Donors - #{date_completed.year}"
   end
 
   tags.compact!
@@ -511,8 +511,13 @@ table.each do |row|
   warn "  - warning: more than one Phone for order #{row["Order Number"].inspect}: #{phones.inspect}" if phones.count > 1
   row["Phone"] = phones.first
 
+  # TODO: these values don't mention a TZ. They look like local time, which is
+  # usually the same as this machine (America/New_York), so this works anyway for
+  # us, but we should pull that in from somewhere.
+  date_completed = Time.parse(row["Date Completed"])
+
   tags = tags_to_apply(row["Page Name"], row["Date Selection"], row["Timeslot Selection"],
-                       added_donation_amount, row)
+                       date_completed, added_donation_amount, row)
   row["Address"] = mailchimp_style_combined_address_field_for_row(row)
   row["Tags"] = tags
 end
