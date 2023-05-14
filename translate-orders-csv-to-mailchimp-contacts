@@ -378,6 +378,32 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, added_donation_
     year = 2023
     tags << "Patrons - 2023 - Musical Mondays, Next Cabaret Superstar"
 
+  elsif page_name == "54"
+    tags << "Patrons - 2023 - 54, Entire Run"
+    tags << case date
+      when Date.parse("2023-06-23")..Date.parse("2023-06-24")
+        "Patrons - 2023 - 54, 1st Week"
+      when Date.parse("2023-06-30")..Date.parse("2023-07-01")
+        "Patrons - 2023 - 54, 2nd Week"
+      when Date.parse("2023-07-07")..Date.parse("2023-07-08")
+        "Patrons - 2023 - 54, 3rd Week"
+      when Date.parse("2023-07-14")..Date.parse("2023-07-15")
+        "Patrons - 2023 - 54, 4th Week"
+      when Date.parse("2023-07-21")..Date.parse("2023-07-22")
+        "Patrons - 2023 - 54, 5th Week"
+      when Date.parse("2023-07-28")..Date.parse("2023-07-29")
+        "Patrons - 2023 - 54, 6th Week"
+      when Date.parse("2023-08-04")..Date.parse("2023-08-05")
+        "Patrons - 2023 - 54, 7th Week"
+      when Date.parse("2023-08-11")..Date.parse("2023-08-12")
+        "Patrons - 2023 - 54, 8th Week"
+      when Date.parse("2023-08-18")..Date.parse("2023-08-19")
+        "Patrons - 2023 - 54, 9th Week"
+      when Date.parse("2023-08-25")..Date.parse("2023-08-26")
+        "Patrons - 2023 - 54, 10th Week"
+      else raise "Unknown show date for 54: #{date}"
+      end
+
   else
     warn "\n\n\n"
     raise "No handler for Page Name #{page_name.inspect} and year #{year.inspect} (parsed from #{date_selection.inspect})\n\n\n"
@@ -517,6 +543,7 @@ end
 
 puts output_string.to_s
 
+warn "Done.\n\n"
 # TODO we can probably downcase everything when comparing for uniqueness (but
 # careful, currently the keys ARE the data so we would need to separate that
 # out)
