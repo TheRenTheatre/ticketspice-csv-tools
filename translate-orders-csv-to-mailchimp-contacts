@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby -w
+# frozen_string_literal: true
 
 require 'csv'
 require 'date'
@@ -529,7 +530,7 @@ end
 
 # Finally, generate a new one that only includes the fields they want
 table.by_col!
-table.delete_if { |header, data|
+table.delete_if { |header, _data|
   !["First Name", "Last Name", "Email Address", "Phone", "Address", "Tags"].include?(header)
 }
 
@@ -551,7 +552,7 @@ output_string = CSV.generate do |csv|
   end
 end
 
-puts output_string.to_s
+puts output_string
 
 warn "Done.\n\n"
 # TODO we can probably downcase everything when comparing for uniqueness (but
