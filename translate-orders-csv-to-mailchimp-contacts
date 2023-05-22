@@ -326,8 +326,13 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     tags << "Patrons - 2023 - Sincerely, Three: Live at The Ren"
 
   elsif (page_name == "Sessions at the Ren" || page_name == "Sessions 2.0") && year == 2023
-    # Ongoing series, only two shows so far, keep them together for now
+    # Ongoing series, three shows so far, keep them together for now
     raise "Unexpected date for #{page_name}: #{date}" unless date.in?([Date.parse("2023-03-04"), Date.parse("2023-04-19")])
+    tags << "Patrons - 2023 - Sessions at the Ren"
+
+  elsif page_name == "Sessions 3" && year.nil?
+    # June 7, 2023 at 7 PM
+    year = 2023
     tags << "Patrons - 2023 - Sessions at the Ren"
 
   elsif page_name == "Circles of Hell: A Staged Workshop" && year == 2023
@@ -341,7 +346,7 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     raise "Unexpected date for #{page_name}: #{date}" unless date == Date.parse("2023-03-25")
     tags << "Patrons - 2023 - Mood"
 
-  elsif page_name == "Mood" && year.nil?
+  elsif page_name =~ /^Mood( 3)?$/ && year.nil?
     year = 2023
     # Like so.
     tags << "Patrons - 2023 - Mood"
