@@ -300,6 +300,13 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
       raise "Unexpected date for #{page_name}: #{date}"
     end
 
+  elsif page_name == "The Ren Sings Whitney" && year.nil?
+    # Set up in Ticketspice as a single event
+    date = Date.new(2023, 6, 28)
+    year = 2023
+    tags << "Patrons - 2023 - The Ren Sings, All"
+    tags << "Patrons - 2023 - The Ren Sings Whitney Houston"
+
   elsif page_name == "Monster Cabaret" && year == 2023
     # Single show; catch any future shows in the series
     raise "Unexpected date for #{page_name}: #{date}" unless date == Date.parse("2023-02-25")
