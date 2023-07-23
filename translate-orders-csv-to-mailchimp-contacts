@@ -390,16 +390,16 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     year = 2023
     tags << "Patrons - 2023 - Musical Mondays, Next Cabaret Superstar"
 
-  elsif page_name == "54"
+  elsif (page_name == "54" || page_name == "54 Upgrades") && year == 2023
     tags << "Patrons - 2023 - 54, Entire Run"
     tags << case date
       when Date.parse("2023-06-23")..Date.parse("2023-06-24")
         "Patrons - 2023 - 54, 1st Week"
       when Date.parse("2023-06-30")..Date.parse("2023-07-01")
         "Patrons - 2023 - 54, 2nd Week"
-      when Date.parse("2023-07-07")..Date.parse("2023-07-08")
+      when Date.parse("2023-07-07")..Date.parse("2023-07-09")
         "Patrons - 2023 - 54, 3rd Week"
-      when Date.parse("2023-07-14")..Date.parse("2023-07-15")
+      when Date.parse("2023-07-14")..Date.parse("2023-07-16")
         "Patrons - 2023 - 54, 4th Week"
       when Date.parse("2023-07-21")..Date.parse("2023-07-22")
         "Patrons - 2023 - 54, 5th Week"
