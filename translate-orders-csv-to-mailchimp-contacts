@@ -390,6 +390,11 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     year = 2023
     tags << "Patrons - 2023 - Musical Mondays, Next Cabaret Superstar"
 
+  elsif page_name == "Gay Bar Star"
+    # One-off event: Jul 27, 2023
+    year = "2023"
+    tags << "Patrons - 2023 - Gay Bar Star"
+
   elsif (page_name == "54" || page_name == "54 Upgrades") && year == 2023
     tags << "Patrons - 2023 - 54, Entire Run"
     tags << case date
@@ -414,6 +419,28 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
       when Date.parse("2023-08-25")..Date.parse("2023-08-26")
         "Patrons - 2023 - 54, 10th Week"
       else raise "Unknown show date for 54: #{date}"
+      end
+
+  elsif page_name == "Nosf3ratu" && year == 2023
+    tags << "Patrons - 2023 - Nosferatu, Entire Run"
+    tags << case date
+      when Date.parse("2023-09-15")..Date.parse("2023-09-16")
+        "Patrons - 2023 - Nosferatu, 1st Week"
+      when Date.parse("2023-09-22")..Date.parse("2023-09-23")
+        "Patrons - 2023 - Nosferatu, 2nd Week"
+      when Date.parse("2023-09-29")..Date.parse("2023-09-30")
+        "Patrons - 2023 - Nosferatu, 3rd Week"
+      when Date.parse("2023-10-06")..Date.parse("2023-10-07")
+        "Patrons - 2023 - Nosferatu, 4th Week"
+      when Date.parse("2023-10-13")..Date.parse("2023-10-14")
+        "Patrons - 2023 - Nosferatu, 5th Week"
+      when Date.parse("2023-10-19")..Date.parse("2023-10-22")
+        "Patrons - 2023 - Nosferatu, 6th Week"
+      when Date.parse("2023-10-26")..Date.parse("2023-10-31")
+        "Patrons - 2023 - Nosferatu, 7th Week"
+      when Date.parse("2023-11-02")..Date.parse("2023-11-05")
+        "Patrons - 2023 - Nosferatu, 8th Week"
+      else raise "Unknown show date for Nosferatu: #{date}"
       end
 
   else
