@@ -351,9 +351,9 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     raise "Unexpected date for #{page_name}: #{date}" unless date == Date.parse("2023-03-25")
     tags << "Patrons - 2023 - Mood"
 
-  elsif page_name =~ /^Mood( 3)?$/ && year.nil?
+  elsif page_name =~ /^Mood( [34])?$/ && year.nil?
     year = 2023
-    # Like so.
+    # Like so. This catches Mood 2–4
     tags << "Patrons - 2023 - Mood"
 
   elsif page_name == "Titan After Party" && year == 2023
