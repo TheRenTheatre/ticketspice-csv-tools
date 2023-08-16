@@ -356,6 +356,11 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     # Like so. This catches Mood 2–4
     tags << "Patrons - 2023 - Mood"
 
+  elsif page_name =~ /^Ren +@ +Ren$/ && year.nil?
+    # "Renaissance @ Renaissance" was the Beyoncé-themed Mood/OTR on Aug 23, 2023
+    year = 2023
+    tags << "Patrons - 2023 - Mood"
+
   elsif page_name == "Titan After Party" && year == 2023
     tags << "Patrons - 2023 - Dragula Titans Tour After-Party"
 
