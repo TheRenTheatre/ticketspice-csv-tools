@@ -361,6 +361,11 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     year = 2023
     tags << "Patrons - 2023 - Mood"
 
+  elsif page_name == "Mood Proud" && year.nil?
+    # Mood after Pride on Oct 21, 2023
+    year = 2023
+    tags << "Patrons - 2023 - Mood"
+
   elsif page_name == "Titan After Party" && year == 2023
     tags << "Patrons - 2023 - Dragula Titans Tour After-Party"
 
@@ -385,19 +390,19 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
   elsif (page_name == "Ren Fair Merchants" || page_name == "Outside Ren Fair Merchants") && year == 2023
     tags << "Merchants - 2023 - Renaissance Fair"
 
-  elsif page_name == "I Love Liz"
+  elsif page_name == "I Love Liz" && year.nil?
     # One-off event: Apr 18 2023 at 8 PM
     year = 2023
     tags << "Patrons - 2023 - I Love Liz"
 
-  elsif page_name == "Cabaret Superstar 2023"
+  elsif page_name == "Cabaret Superstar 2023" && year.nil?
     # Event series: Apr 3, Apr 10, Apr 17, Apr 24, and May 1, 2023
     year = 2023
     tags << "Patrons - 2023 - Musical Mondays, Next Cabaret Superstar"
 
-  elsif page_name == "Gay Bar Star"
+  elsif page_name == "Gay Bar Star" && year.nil?
     # One-off event: Jul 27, 2023
-    year = "2023"
+    year = 2023
     tags << "Patrons - 2023 - Gay Bar Star"
 
   elsif (page_name == "54" || page_name == "54 Upgrades") && year == 2023
@@ -426,7 +431,26 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
       else raise "Unknown show date for 54: #{date}"
       end
 
-  elsif page_name == "Nosf3ratu" && year == 2023
+  elsif page_name == "You Like Jazz?" && year.nil?
+    # One-off event: Sep 17, 2023
+    year = 2023
+    tags << "Patrons - 2023 - You Like Jazz?"
+
+  elsif page_name == "Gagaball" && year.nil?
+    # One-off event: Sep 21, 2023
+    year = 2023
+    tags << "Patrons - 2023 - Gagaball"
+
+  elsif page_name == "Monday Please!" && year == 2023
+    # This was used to process a donation for our fundraiser on Oct 2, 2023
+    tags << "Donors - 2023"
+
+  elsif page_name == "MX OTR Pageant" && year.nil?
+    # One-off event: Oct 4, 2023
+    year = 2023
+    tags << "Patrons - 2023 - Mx OTR Pageant"
+
+  elsif (page_name == "Nosf3ratu" || page_name == "Nosf3ratu Upgrades") && year == 2023
     tags << "Patrons - 2023 - Nosferatu, Entire Run"
     tags << case date
       when Date.parse("2023-09-15")..Date.parse("2023-09-16")
@@ -447,6 +471,12 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
         "Patrons - 2023 - Nosferatu, 8th Week"
       else raise "Unknown show date for Nosferatu: #{date}"
       end
+
+  elsif page_name == "ASL Slam 4"
+    # One-off event: Nov 17, 2023
+    year = 2023
+    tags << "Patrons - 2023 - ASL Slam 4"
+
 
   else
     warn "\n\n\n"
