@@ -250,6 +250,11 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     year = 2023
     tags << "Patrons - 2023 - ASL Slam"
 
+  elsif page_name == "ASL Slam 4" && year.nil?
+    # Set up as one-off event on Friday, Nov 17, 2023
+    year = 2023
+    tags << "Patrons - 2023 - ASL Slam"
+
   elsif page_name == "The Office Holiday Party Musical Extravaganza Show" && year == 2022
     tags << "Patrons - 2022 - The Office Holiday Party Musical Extravaganza Show, Entire Run"
     tags << case date
@@ -450,7 +455,7 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     year = 2023
     tags << "Patrons - 2023 - Mx OTR Pageant"
 
-  elsif (page_name == "Nosf3ratu" || page_name == "Nosf3ratu Upgrades") && year == 2023
+  elsif page_name.in?(["Nosf3ratu", "Nosf3ratu Upgrades"]) && year == 2023
     tags << "Patrons - 2023 - Nosferatu, Entire Run"
     tags << case date
       when Date.parse("2023-09-15")..Date.parse("2023-09-16")
@@ -471,12 +476,6 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
         "Patrons - 2023 - Nosferatu, 8th Week"
       else raise "Unknown show date for Nosferatu: #{date}"
       end
-
-  elsif page_name == "ASL Slam 4"
-    # One-off event: Nov 17, 2023
-    year = 2023
-    tags << "Patrons - 2023 - ASL Slam 4"
-
 
   else
     warn "\n\n\n"
