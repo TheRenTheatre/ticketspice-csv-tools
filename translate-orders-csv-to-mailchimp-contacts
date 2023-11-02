@@ -502,9 +502,9 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
 end
 
 def printable_order_summary(row)
-  values = row.to_h.fetch_values("First Name", "Last Name", "Order Number", "Date Selection")
-  values[3] ||= "(no date)"
-  "%s %s - order number %s - tickets for %s" % values
+  values = row.to_h.fetch_values("First Name", "Last Name", "Order Number", "Page Name", "Date Selection")
+  values[4] ||= "(no date)"
+  "%s %s - order number %s - tickets for '%s' on %s" % values
 end
 
 def mailchimp_style_combined_address_field_for_row(row)
