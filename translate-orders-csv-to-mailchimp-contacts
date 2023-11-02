@@ -593,6 +593,19 @@ table.each do |row|
   row["Tags"] = tags
 end
 
+
+# Skip rows without an email address - typically at-door box office sales
+if table.any? { |row| row["Email Address"].nil? }
+  warn "  - warning: skipping orders without an email address:"
+end
+table.delete_if do |row|
+  if row["Email Address"].nil?
+    warn "             #{printable_order_summary(row)}"
+    true
+  end
+end
+
+
 # Finally, generate a new one that only includes the fields they want
 table.by_col!
 table.delete_if { |header, _data|
