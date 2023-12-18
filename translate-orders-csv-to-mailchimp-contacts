@@ -491,6 +491,16 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
             else raise "Unknown show date for Office Holiday Party: #{date}"
             end
 
+  elsif page_name == "Musical Mondays Sings Legally Blonde" && year.nil?
+    # Nov 20, 2023
+    year = 2023
+    tags << "Patrons - 2023 - Musical Mondays"
+
+  elsif page_name == "Musical Mondays Sings Annie" && year.nil?
+    # Dec 18, 2023
+    year = 2023
+    tags << "Patrons - 2023 - Musical Mondays"
+
 
   else
     warn "\n\n\n"
