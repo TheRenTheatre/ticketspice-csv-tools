@@ -650,7 +650,15 @@ end
 output_string = CSV.generate do |csv|
   csv << ["First Name", "Last Name", "Email Address", "Phone", "Address", "Tags"]
   personal_info_mapped_to_tags.each_pair do |personal_info, tags|
-    formatted_tags_field = tags.map(&:inspect).join(",")
+    # Surround single tags in quotes only when they contain commas
+    # https://mailchimp.com/help/format-guidelines-for-your-import-file/
+    formatted_tags_field = tags.map { |t|
+      if t.include?(",")
+        "\"#{t}\""
+      else
+        t
+      end
+    }.join(",")
     csv << personal_info.push(formatted_tags_field)
   end
 end
