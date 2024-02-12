@@ -509,7 +509,6 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     raise "Unknown show date for Milk: #{date}" unless date.in?(Date.new(2024, 2, 22)..Date.new(2024, 3, 10))
     tags << "Patrons - 2024 - Qualia, Entire Run"
 
-
   elsif page_name == "The Ren" && year.nil?
     # This is our hacky standalone page for gift certificates
     year = 2024
@@ -519,12 +518,22 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     raise "Unknown show date for 'thank u, next': #{date}" unless date.in?([Date.new(2024, 2, 14), Date.new(2024, 2, 21)])
     tags << "Patrons - 2024 - OTR"
 
+  elsif page_name == "Quickies" && year == 2024
+    raise "Unknown show date for Quickies: #{date}" unless
+      date.in?(Date.new(2024, 2, 14)..Date.new(2024, 2, 18))
+    tags << "Patrons - 2024 - Quickies"
+
   elsif page_name == "From Here" && year == 2024
     # This is the March-May 2024 run at the Ren
     tags << "Patrons - 2024 - From Here at the Ren, Entire Run"
 
   elsif page_name == "Ren Events Vendors" && year == 2024
     tags << "Vendors - 2024"
+
+  elsif page_name == "Renburn" && year.nil?
+    # One-off event on Saturday, Feb 17 2024 for our 3rd anniversary
+    year = 2024
+    tags << "Patrons - 2024 - Renburn"
 
 
   else
