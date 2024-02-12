@@ -503,11 +503,11 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
 
   elsif page_name == "Qualia" && year == 2024
     raise "Unknown show date for Qualia: #{date}" unless date.in?(Date.new(2024, 1, 26)..Date.new(2024, 2, 11))
-    tags << "Patrons - 2024 - Qualia, Entire Run"
+    tags << "Patrons - 2024 - Qualia"
 
   elsif page_name == "Milk" && year == 2024
     raise "Unknown show date for Milk: #{date}" unless date.in?(Date.new(2024, 2, 22)..Date.new(2024, 3, 10))
-    tags << "Patrons - 2024 - Qualia, Entire Run"
+    tags << "Patrons - 2024 - Milk"
 
   elsif page_name == "The Ren" && year.nil?
     # This is our hacky standalone page for gift certificates
