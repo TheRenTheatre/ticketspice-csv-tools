@@ -393,7 +393,7 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
             end
 
   elsif (page_name == "Ren Fair Merchants" || page_name == "Outside Ren Fair Merchants") && year == 2023
-    tags << "Merchants - 2023 - Renaissance Fair"
+    tags << "Vendors - 2023 - Renaissance Fair"
 
   elsif page_name == "I Love Liz" && year.nil?
     # One-off event: Apr 18 2023 at 8 PM
@@ -522,6 +522,10 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
   elsif page_name == "From Here" && year == 2024
     # This is the March-May 2024 run at the Ren
     tags << "Patrons - 2024 - From Here at the Ren, Entire Run"
+
+  elsif page_name == "Ren Events Vendors" && year == 2024
+    tags << "Vendors - 2024"
+
 
   else
     warn "\n\n\n"
