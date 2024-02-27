@@ -255,6 +255,11 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     year = 2023
     tags << "Patrons - 2023 - ASL Slam"
 
+  elsif page_name == "ASL Slam 5" && year.nil?
+    # Set up as one-off event on Sat, Mar 16, 2024
+    year = 2024
+    tags << "Patrons - 2024 - ASL Slam"
+
   elsif page_name == "The Office Holiday Party Musical Extravaganza Show" && year == 2022
     tags << "Patrons - 2022 - The Office Holiday Party Musical Extravaganza Show, Entire Run"
     tags << case date
@@ -505,7 +510,7 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     raise "Unknown show date for Qualia: #{date}" unless date.in?(Date.new(2024, 1, 26)..Date.new(2024, 2, 11))
     tags << "Patrons - 2024 - Qualia"
 
-  elsif page_name == "Milk" && year == 2024
+  elsif (page_name == "Milk" || page_name == "MILK") && year == 2024
     raise "Unknown show date for Milk: #{date}" unless date.in?(Date.new(2024, 2, 22)..Date.new(2024, 3, 10))
     tags << "Patrons - 2024 - Milk"
 
@@ -535,6 +540,20 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     year = 2024
     tags << "Patrons - 2024 - Renburn"
 
+  elsif page_name == "Renburn" && year == 2024
+    # Sequel events that are also the Saturday after-parties for Milk
+    raise "Unknown show date for Renburn: #{date}" unless
+      date.in?([Date.new(2024, 2, 24), Date.new(2024, 3, 2), Date.new(2024, 3, 9)])
+    tags << "Patrons - 2024 - Renburn"
+
+  elsif page_name == "act ii Listening Party" && year == 2024
+    # One-off event on Thu, Mar 28 2024 for Beyoncé's record release
+    tags << "Patrons - 2024 - act ii Listening Party"
+
+  elsif page_name == "Cesar's Birthday Bash" && year.nil?
+    # One-off event on Fri, Mar 15, 2024
+    year = 2024
+    tags << "Patrons - 2024 - Cesar's Birthday Bash"
 
   else
     warn "\n\n\n"
