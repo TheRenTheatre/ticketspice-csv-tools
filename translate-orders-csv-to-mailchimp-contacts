@@ -511,7 +511,9 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     tags << "Patrons - 2024 - Qualia"
 
   elsif (page_name == "Milk" || page_name == "MILK") && year == 2024
-    raise "Unknown show date for Milk: #{date}" unless date.in?(Date.new(2024, 2, 22)..Date.new(2024, 3, 10))
+    raise "Unknown show date for Milk: #{date}" unless date.in?(
+      (Date.new(2024, 2, 22)..Date.new(2024, 3, 10)).to_a +
+       [Date.new(2024, 3, 17), Date.new(2024, 3, 24), Date.new(2024, 3, 31)])
     tags << "Patrons - 2024 - Milk"
 
   elsif page_name == "The Ren" && year.nil?
@@ -554,6 +556,18 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     # One-off event on Fri, Mar 15, 2024
     year = 2024
     tags << "Patrons - 2024 - Cesar's Birthday Bash"
+
+  elsif page_name == "The Afters" && year == 2024
+    # The Saturdays after From Here starting with the second week
+    dates = 8.times.map { |week| Date.new(2024, 3, 30) + week * 7 }
+    raise "Unknown show date for The Afters: #{date}" unless date.in?(dates)
+    tags << "Patrons - 2024 - The Afters"
+
+  elsif page_name == "Musical Mondays" && year == 2024
+    # We started selling advance tickets for MM using a single page in April 2024
+    mondays_in_2024 = 40.times.map { |week| Date.new(2024, 4, 1) + week * 7 }
+    raise "Unknown show date for Musical Mondays: #{date}" unless date.in?(mondays_in_2024)
+    tags << "Patrons - 2024 - Musical Mondays"
 
   else
     warn "\n\n\n"
