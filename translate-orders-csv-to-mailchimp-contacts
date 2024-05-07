@@ -260,6 +260,11 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     year = 2024
     tags << "Patrons - 2024 - ASL Slam"
 
+  elsif page_name == "ASL Slam 6" && year.nil?
+    # Set up as one-off event on Sat, Jun 1, 2024
+    year = 2024
+    tags << "Patrons - 2024 - ASL Slam"
+
   elsif page_name == "The Office Holiday Party Musical Extravaganza Show" && year == 2022
     tags << "Patrons - 2022 - The Office Holiday Party Musical Extravaganza Show, Entire Run"
     tags << case date
@@ -568,6 +573,54 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     mondays_in_2024 = 40.times.map { |week| Date.new(2024, 4, 1) + week * 7 }
     raise "Unknown show date for Musical Mondays: #{date}" unless date.in?(mondays_in_2024)
     tags << "Patrons - 2024 - Musical Mondays"
+
+  elsif page_name == "The Ren Dances" && year == 2024
+    # Dance classes from 4/17
+    ren_dances_dates = [Date.new(2024, 4, 17), Date.new(2024, 4, 24), Date.new(2024, 5, 1), Date.new(2024, 5, 8)]
+    raise "Unknown date for The Ren Dances: #{date}" unless date.in?(ren_dances_dates)
+    tags << "Patrons - 2024 - The Ren Dances"
+
+  elsif page_name == "24" && year == 2024
+    tags << "Patrons - 2024 - 24, Entire Run"
+    tags << case date
+      when Date.parse("2024-06-06")..Date.parse("2024-06-08")
+        "Patrons - 2024 - 24, 1st Week"
+      when Date.parse("2024-06-14")..Date.parse("2024-06-15")
+        "Patrons - 2024 - 24, 2nd Week"
+      when Date.parse("2024-06-21")..Date.parse("2024-06-22")
+        "Patrons - 2024 - 24, 3rd Week"
+      when Date.parse("2024-06-28")..Date.parse("2024-06-29")
+        "Patrons - 2024 - 24, 4th Week"
+      when Date.parse("2024-07-05")..Date.parse("2024-07-06")
+        "Patrons - 2024 - 24, 5th Week"
+      when Date.parse("2024-07-12")..Date.parse("2024-07-13")
+        "Patrons - 2024 - 24, 6th Week"
+      when Date.parse("2024-07-19")..Date.parse("2024-07-20")
+        "Patrons - 2024 - 24, 7th Week"
+      when Date.parse("2024-07-26")..Date.parse("2024-07-27")
+        "Patrons - 2024 - 24, 8th Week"
+      when Date.parse("2024-08-01")..Date.parse("2024-08-04")
+        "Patrons - 2024 - 24, 9th Week"
+      when Date.parse("2024-08-08")..Date.parse("2024-08-11")
+        "Patrons - 2024 - 24, 10th Week"
+      else raise "Unknown show date for 24: #{date}"
+      end
+
+  elsif page_name == "Funny Gworl!" && year.nil?
+    # One-off event on Thu, May 2, 2024
+    year = 2024
+    tags << "Patrons - 2024 - Funny Gworl"
+
+  elsif page_name == "Orlando Fringe BYOV Teaser Show" && year.nil?
+    # One-off event on Mon, May 6, 2024
+    year = 2024
+    tags << "Patrons - 2024 - Orlando Fringe BYOV Teaser Show"
+
+  elsif page_name == "Club Kid Fantasy" && year.nil?
+    # One-off event alongside OTR on Wed, May 22, 2024
+    year = 2024
+    tags << "Patrons - 2024 - OTR"
+
 
   else
     warn "\n\n\n"
