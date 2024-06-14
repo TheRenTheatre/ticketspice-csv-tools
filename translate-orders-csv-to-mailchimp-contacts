@@ -583,26 +583,30 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
   elsif page_name == "24" && year == 2024
     tags << "Patrons - 2024 - 24, Entire Run"
     tags << case date
-      when Date.parse("2024-06-06")..Date.parse("2024-06-08")
-        "Patrons - 2024 - 24, 1st Week"
+      when Date.parse("2023-06-08")..Date.parse("2024-06-13")
+        warn "  - warning: we moved the #{date} show of '24, but there's a completed order for it:\n" +
+             "             #{printable_order_summary(csv_row)}\n\n"
+        nil
+      when Date.parse("2024-06-08")..Date.parse("2024-06-09")
+        "Patrons - 2024 - 24, cancelled 1st Week"
       when Date.parse("2024-06-14")..Date.parse("2024-06-15")
-        "Patrons - 2024 - 24, 2nd Week"
+        "Patrons - 2024 - 24, 1st Week"
       when Date.parse("2024-06-21")..Date.parse("2024-06-22")
+        "Patrons - 2024 - 24, 2nd Week"
+      when Date.parse("2024-06-26")..Date.parse("2024-06-27")
         "Patrons - 2024 - 24, 3rd Week"
-      when Date.parse("2024-06-28")..Date.parse("2024-06-29")
-        "Patrons - 2024 - 24, 4th Week"
       when Date.parse("2024-07-05")..Date.parse("2024-07-06")
+        "Patrons - 2024 - 24, 4th Week"
+      when Date.parse("2024-07-11")..Date.parse("2024-07-14")
         "Patrons - 2024 - 24, 5th Week"
-      when Date.parse("2024-07-12")..Date.parse("2024-07-13")
+      when Date.parse("2024-07-18")..Date.parse("2024-07-21")
         "Patrons - 2024 - 24, 6th Week"
-      when Date.parse("2024-07-19")..Date.parse("2024-07-20")
+      when Date.parse("2024-07-25")..Date.parse("2024-07-28")
         "Patrons - 2024 - 24, 7th Week"
-      when Date.parse("2024-07-26")..Date.parse("2024-07-27")
-        "Patrons - 2024 - 24, 8th Week"
       when Date.parse("2024-08-01")..Date.parse("2024-08-04")
-        "Patrons - 2024 - 24, 9th Week"
+        "Patrons - 2024 - 24, 8th Week"
       when Date.parse("2024-08-08")..Date.parse("2024-08-11")
-        "Patrons - 2024 - 24, 10th Week"
+        "Patrons - 2024 - 24, 9th Week"
       else raise "Unknown show date for 24: #{date}"
       end
 
