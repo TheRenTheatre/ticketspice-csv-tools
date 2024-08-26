@@ -229,7 +229,7 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
 
   elsif page_name == "MX OTR The Pageant Experience" && year == 2022
     # Single show, but not set up in TicketSpice as a one-off event
-    tags << "Patrons - 2022 - MX OTR The Pageant Experience"
+    tags << "Patrons - 2022 - OTR"
 
   elsif page_name == "Winnie's Rock Cauldron Cabaret" && year == 2022
     # Single show, but not set up in TicketSpice as a one-off event
@@ -463,7 +463,7 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
   elsif page_name == "MX OTR Pageant" && year.nil?
     # One-off event: Oct 4, 2023
     year = 2023
-    tags << "Patrons - 2023 - Mx OTR Pageant"
+    tags << "Patrons - 2023 - OTR"
 
   elsif page_name.in?(["Nosf3ratu", "Nosf3ratu Upgrades"]) && year == 2023
     tags << "Patrons - 2023 - Nosferatu, Entire Run"
