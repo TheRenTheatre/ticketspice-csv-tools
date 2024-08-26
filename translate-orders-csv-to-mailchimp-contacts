@@ -580,7 +580,7 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     raise "Unknown date for The Ren Dances: #{date}" unless date.in?(ren_dances_dates)
     tags << "Patrons - 2024 - The Ren Dances"
 
-  elsif page_name == "24" && year == 2024
+  elsif page_name =~ /^'?24$/ && year == 2024
     tags << "Patrons - 2024 - 24, Entire Run"
     tags << case date
       when Date.parse("2023-06-08")..Date.parse("2024-06-13")
@@ -624,6 +624,40 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     # One-off event alongside OTR on Wed, May 22, 2024
     year = 2024
     tags << "Patrons - 2024 - OTR"
+
+  elsif page_name == "OTR: club brat" && year == 2024
+    # A few weeks of OTR in July, 2024
+    dates = [Date.new(2024, 7, 3), Date.new(2024, 7, 10)]
+    raise "Unknown show date for OTR: club brat: #{date}" unless date.in?(dates)
+    tags << "Patrons - 2024 - OTR"
+
+  elsif page_name == "OTR: Sapphic Summer" && year == 2024
+    raise "Unknown show date for OTR: Sapphic Summer: #{date}" unless date == Date.new(2024, 7, 24)
+    tags << "Patrons - 2024 - OTR"
+
+  elsif page_name == "Nosferatu" && year == 2024
+    tags << "Patrons - 2024 - Nosferatu, Entire Run"
+    tags << case date
+      when Date.parse("2024-09-13")..Date.parse("2024-09-14")
+        "Patrons - 2024 - Nosferatu, 1st Week"
+      when Date.parse("2024-09-20")..Date.parse("2024-09-21")
+        "Patrons - 2024 - Nosferatu, 2nd Week"
+      when Date.parse("2024-09-27")..Date.parse("2024-09-28")
+        "Patrons - 2024 - Nosferatu, 3rd Week"
+      when Date.parse("2024-10-03")..Date.parse("2024-10-05")
+        "Patrons - 2024 - Nosferatu, 4th Week"
+      when Date.parse("2024-10-10")..Date.parse("2024-10-12")
+        "Patrons - 2024 - Nosferatu, 5th Week"
+      when Date.parse("2024-10-16")..Date.parse("2024-10-20")
+        "Patrons - 2024 - Nosferatu, 6th Week"
+      when Date.parse("2024-10-23")..Date.parse("2024-10-27")
+        "Patrons - 2024 - Nosferatu, 7th Week"
+      when Date.parse("2024-10-28")..Date.parse("2024-11-03")
+        "Patrons - 2024 - Nosferatu, 8th Week"
+      when Date.parse("2024-11-07")..Date.parse("2024-11-10")
+        "Patrons - 2024 - Nosferatu, 9th Week"
+      else raise "Unknown show date for 24: #{date}"
+      end
 
 
   else
