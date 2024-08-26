@@ -413,7 +413,7 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
   elsif page_name == "Cabaret Superstar 2023" && year.nil?
     # Event series: Apr 3, Apr 10, Apr 17, Apr 24, and May 1, 2023
     year = 2023
-    tags << "Patrons - 2023 - Musical Mondays, Next Cabaret Superstar"
+    tags << "Patrons - 2023 - Musical Mondays"
 
   elsif page_name == "Gay Bar Star" && year.nil?
     # One-off event: Jul 27, 2023
