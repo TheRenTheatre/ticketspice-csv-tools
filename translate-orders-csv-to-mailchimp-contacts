@@ -645,6 +645,9 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
   elsif page_name == "OTR" && year == 2024
     tags << "Patrons - 2024 - OTR"
 
+  elsif page_name == "OTR" && year == 2025
+    tags << "Patrons - 2025 - OTR"
+
   elsif (page_name == "Nosferatu" || page_name == "Nos At Door Sales") && year == 2024
     tags << "Patrons - 2024 - Nosferatu, Entire Run"
     tags << case date
@@ -670,7 +673,7 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
       end
 
   elsif page_name == "Groove Royalty" && year.in?([2024, 2025])
-    dates = [Date.new(2024, 11, 12), Date.new(2025, 1, 7)]
+    dates = [Date.new(2024, 11, 12), Date.new(2025, 1, 7), Date.new(2025, 2, 13), Date.new(2025, 3, 27)]
     raise "Unknown show date for Groove Royalty: #{date}" unless date.in?(dates)
     tags << "Patrons - #{year} - Groove Royalty"
 
@@ -699,6 +702,8 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
               "Patrons - 2025 - The Pitchforks, 3rd Week"
             when Date.parse("2025-02-14")..Date.parse("2025-02-16")
               "Patrons - 2025 - The Pitchforks, 4th Week"
+            when Date.parse("2025-02-21")..Date.parse("2025-02-22")
+              "Patrons - 2025 - The Pitchforks, 5th Week"
             else raise "Unknown show date for The Pitchforks: #{date}"
             end
 
@@ -727,14 +732,89 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
               "Patrons - 2025 - Boots, 7th Week"
             when Date.parse("2025-03-28")..Date.parse("2025-03-29")
               "Patrons - 2025 - Boots, 8th Week"
+            when Date.parse("2025-04-04")..Date.parse("2025-04-05")
+              "Patrons - 2025 - Boots, 9th Week"
+            when Date.parse("2025-04-11")..Date.parse("2025-04-12")
+              "Patrons - 2025 - Boots, 10th Week"
+            when Date.parse("2025-04-18")..Date.parse("2025-04-19")
+              "Patrons - 2025 - Boots, 11th Week"
+            when Date.parse("2025-04-25")..Date.parse("2025-04-26")
+              "Patrons - 2025 - Boots, 12th Week"
             else raise "Unknown show date for Boots: #{date}"
             end
 
-  elsif page_name == "Musical Mondays" && year == 2025
-    # We continued selling advance tickets for MM using a single page in 2025
+  elsif page_name == "Boots" && year.nil?
+    # Somehow a few ticket orders are coming through with Boots setup as a one-off show
+    # (so there's no date information attached).
+    year = 2025
+    tags << "Patrons - 2025 - Boots, Entire Run"
+
+  elsif ["Musical Mondays",
+         "Reserve Your Seats for Monday",
+         /^Musical Mondays LIVE/].any? { |p| p === page_name } && year == 2025
+    # We sold advance tickets for MM using several pages in 2025
     mondays_in_2025 = 52.times.map { |week| Date.new(2025, 1, 6) + week * 7 }
     raise "Unknown show date for Musical Mondays: #{date}" unless date.in?(mondays_in_2025)
     tags << "Patrons - 2025 - Musical Mondays"
+
+  elsif page_name == "Bloom" && year == 2025
+    dates = [Date.new(2025, 2, 23), Date.new(2025, 3, 2)]
+    raise "Unknown show date for Bloom: #{date}" unless date.in?(dates)
+    tags << "Patrons - 2025 - Bloom"
+
+
+  elsif page_name == "Laughs In Spanish" && year == 2025
+    tags << "Patrons - 2025 - Laughs in Spanish, Entire Run"
+    tags << case date
+            when Date.parse("2025-03-07")..Date.parse("2025-03-08")
+              "Patrons - 2025 - Laughs in Spanish, 1st Week"
+            when Date.parse("2025-03-14")..Date.parse("2025-03-15")
+              "Patrons - 2025 - Laughs in Spanish, 2nd Week"
+            when Date.parse("2025-03-21")..Date.parse("2025-03-23")
+              "Patrons - 2025 - Laughs in Spanish, 3rd Week"
+            when Date.parse("2025-03-28")..Date.parse("2025-03-30")
+              "Patrons - 2025 - Laughs in Spanish, 4th Week"
+            else raise "Unknown show date for Laughs in Spanish: #{date}"
+            end
+
+  elsif page_name == "College Park Players" && year == 2025
+    raise "Unknown show date for College Park Players: #{date}" unless date.in?([Date.new(2025, 3, 25), Date.new(2025, 4, 3)])
+    tags << "Patrons - 2025 - College Park Players"
+
+  elsif page_name == "TEST" && year == 2025
+    # no op
+
+  elsif page_name == "The Gig" && year == 2025
+    season_1_range = Date.new(2025, 3, 5)..Date.new(2025, 4, 13)
+    raise "Unknown show date for The Gig: #{date}" if !season_1_range.include?(date)
+    tags << "Patrons - 2025 - The Gig, Season 1"
+
+  elsif page_name == "The Gig" && year.nil?
+    # Not sure why these came through without a show date
+    if date_completed.year == 2025 && date_completed.month <= 4
+      tags << "Patrons - 2025 - The Gig, Season 1"
+      year = 2025
+    else
+      raise "Unknown show date for The Gig with nil year: #{date_completed}"
+    end
+
+  elsif page_name == "Gorgeous" && year == 2025
+    tags << "Patrons - 2025 - Gorgeous, Entire Run"
+    tags << case date
+            when Date.parse("2025-04-11")..Date.parse("2025-04-12")
+              "Patrons - 2025 - Gorgeous, 1st Week"
+            when Date.parse("2025-04-18")..Date.parse("2025-04-19")
+              "Patrons - 2025 - Gorgeous, 2nd Week"
+            when Date.parse("2025-04-25")..Date.parse("2025-04-26")
+              "Patrons - 2025 - Gorgeous, 3rd Week"
+            when Date.parse("2025-05-02")..Date.parse("2025-05-03")
+              "Patrons - 2025 - Gorgeous, 4th Week"
+            else raise "Unknown show date for Gorgeous: #{date}"
+            end
+
+  elsif page_name == "Roz Hernandez does Comedy in a Gay Bar?!" && year == 2025
+    raise "Unknown show date for Roz Hernandez: #{date}" unless date == Date.new(2025, 8, 10)
+    tags << "Patrons - 2025 - Roz Hernandez does Comedy in a Gay Bar"
 
 
   else
