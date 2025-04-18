@@ -740,6 +740,12 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
               "Patrons - 2025 - Boots, 11th Week"
             when Date.parse("2025-04-25")..Date.parse("2025-04-26")
               "Patrons - 2025 - Boots, 12th Week"
+            when Date.parse("2025-05-02")..Date.parse("2025-05-03")
+              "Patrons - 2025 - Boots, 13th Week"
+            when Date.parse("2025-05-09")
+              "Patrons - 2025 - Boots, 14th Week"
+            when Date.parse("2025-05-24")
+              "Patrons - 2025 - Boots, 15th Week"
             else raise "Unknown show date for Boots: #{date}"
             end
 
@@ -778,14 +784,14 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
             end
 
   elsif page_name == "College Park Players" && year == 2025
-    raise "Unknown show date for College Park Players: #{date}" unless date.in?([Date.new(2025, 3, 25), Date.new(2025, 4, 3)])
+    raise "Unknown show date for College Park Players: #{date}" unless date.in?([Date.new(2025, 3, 25), Date.new(2025, 4, 3), Date.new(2025, 5, 29)])
     tags << "Patrons - 2025 - College Park Players"
 
   elsif page_name == "TEST" && year == 2025
     # no op
 
   elsif page_name == "The Gig" && year == 2025
-    season_1_range = Date.new(2025, 3, 5)..Date.new(2025, 4, 13)
+    season_1_range = Date.new(2025, 3, 5)..Date.new(2025, 4, 16)
     raise "Unknown show date for The Gig: #{date}" if !season_1_range.include?(date)
     tags << "Patrons - 2025 - The Gig, Season 1"
 
@@ -815,6 +821,10 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
   elsif page_name == "Roz Hernandez does Comedy in a Gay Bar?!" && year == 2025
     raise "Unknown show date for Roz Hernandez: #{date}" unless date == Date.new(2025, 8, 10)
     tags << "Patrons - 2025 - Roz Hernandez does Comedy in a Gay Bar"
+
+  elsif page_name == "Rizen" && year == 2025
+    raise "Unknown show date for Rizen: #{date}" unless date == Date.new(2025, 4, 20)
+    tags << "Patrons - 2025 - Rizen"
 
 
   else
