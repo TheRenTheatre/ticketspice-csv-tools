@@ -829,6 +829,7 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
 
   else
     warn "\n\n\n"
+    warn "Error handling row:\n\n#{csv_row.inspect}\n\n"
     raise "No handler for Page Name #{page_name.inspect} and year #{year.inspect} (parsed from #{date_selection.inspect})\n\n\n"
   end
 
