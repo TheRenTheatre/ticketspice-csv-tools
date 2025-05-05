@@ -1023,15 +1023,21 @@ stats_by_email = table.group_by { |row| row["Email Address"] }.
     end
   end
   cols_for_email.each_pair { |col, vals|
-    cols_for_email[col].uniq! { |v|
-      v.nil? ? nil : v.downcase.delete(",.").strip.squeeze(" ")
-    }
+    if col == "Phone"
+      # Make a frequency count so we can see which phone number is used more often
+      counts = cols_for_email[col].reduce(Hash.new(0)) { |h, v| h.store(v, h[v]+1); h }
+      cols_for_email[col] = counts.map { |phone, c| "#{phone} (#{c})" }
+    else
+      cols_for_email[col].uniq! { |v|
+        v.nil? ? nil : v.downcase.delete(",.").strip.squeeze(" ")
+      }
+    end
     cols_for_email[col].compact!
   }
   cols_for_email["Tags"] = cols_for_email["Tags"].uniq.reject { |t|
     t =~ /^Donors|Week$/ || t =~ /The Ren Sings, All/ || t =~ /Bullock and the Bandits, All Shows/
   }.map { |t|
-    t.sub(/^Patrons - /, "").sub(/, Entire Run$/, "").sub(/^(202[123]) - (.+)$/, '\2 - \1')
+    t.sub(/^Patrons - /, "").sub(/, Entire Run$/, "").sub(/^(202[12345]) - (.+)$/, '\2 - \1')
   }
   cols_for_email["Show Count"] = cols_for_email["Tags"].count
   cols_for_email["Order Count"] = rows.count
