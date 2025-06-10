@@ -396,7 +396,7 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     tags << case date
             when Date.parse("2023-04-13")
               warn "  - warning: we moved the Apr 13, 2023 show of The Cocaine Play, but there's a completed order for it:\n" +
-                   "             #{printable_order_summary(csv_row)}\n\n"
+                   "             #{printable_order_summary(csv_row)}\n"
               nil
             when Date.parse("2023-04-14")..Date.parse("2023-04-15")
               "Patrons - 2023 - The Cocaine Play, 1st Week"
@@ -592,7 +592,7 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     tags << case date
       when Date.parse("2023-06-08")..Date.parse("2024-06-13")
         warn "  - warning: we moved the #{date} show of '24, but there's a completed order for it:\n" +
-             "             #{printable_order_summary(csv_row)}\n\n"
+             "             #{printable_order_summary(csv_row)}\n"
         nil
       when Date.parse("2024-06-08")..Date.parse("2024-06-09")
         "Patrons - 2024 - 24, cancelled 1st Week"
