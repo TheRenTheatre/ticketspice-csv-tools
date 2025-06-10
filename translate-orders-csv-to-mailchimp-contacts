@@ -40,6 +40,10 @@ warn_usage_and_abort unless ARGV.length == 1
 
 def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed, added_donation_amount, csv_row)
   tags = []
+  order_total = csv_row["Order Total (Amount)"].to_f
+  boots_paid_performances_list = []
+  boots_paid_performances_ordered = 0
+  boots_orders_total = 0
   if date_selection.nil? # one-off events
     date = year = nil
   else
@@ -771,6 +775,13 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
               "Patrons - 2025 - Boots, 24th Week"
             else raise "Unknown show date for Boots: #{date}"
             end
+    if order_total > 0
+      boots_paid_performances_list << date.to_s
+      boots_paid_performances_ordered += 1
+    elsif order_total == 0
+      boots_paid_performances_list << "#{date} (comp)"
+    end
+    boots_orders_total += order_total
 
   elsif page_name == "Boots" && year.nil?
     # Somehow a few ticket orders are coming through with Boots setup as a one-off show
@@ -914,7 +925,7 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
 
   tags.compact!
 
-  tags
+  [tags, boots_paid_performances_ordered, boots_paid_performances_list, boots_orders_total]
 end
 
 def printable_order_summary(row)
@@ -957,7 +968,8 @@ ticketspice_to_mailchimp_converter = proc { |ticketspice_header|
     "Billing Address (Country)"        => "Address - Country",
     "Billing Address (Postal Code)"    => "Address - Zip/Postal",
     "Added Donation ($ Amount)"        => "Added Donation (Amount) #{col_num}",
-    "Donation Amount ($ Amount)"       => "Added Donation (Amount) #{col_num}"
+    "Donation Amount ($ Amount)"       => "Added Donation (Amount) #{col_num}",
+    "Order Total ($ Amount)"           => "Order Total (Amount)"
   )
   col_num += 1
   translation[ticketspice_header]
@@ -980,7 +992,7 @@ table = CSV.parse(file_contents, headers: true,
 
 # Only consider orders after this time
 table.delete_if { |row|
-  Time.parse(row["Date Completed"]) < Time.parse("2023-05-05 12:00 AM")
+  Time.parse(row["Date Completed"]) < Time.parse("2024-06-10 12:00 AM")
 }
 
 # Collapse duplicate fields; convert mailing address; add tags
@@ -1008,10 +1020,14 @@ table.each do |row|
   # us, but we should pull that in from somewhere.
   date_completed = Time.parse(row["Date Completed"])
 
-  tags = tags_to_apply(row["Page Name"], row["Date Selection"], row["Timeslot Selection"],
-                       date_completed, added_donation_amount, row)
+  tags, boots_paid_performances_ordered, boots_paid_performances_list, boots_orders_total =
+    tags_to_apply(row["Page Name"], row["Date Selection"], row["Timeslot Selection"],
+                  date_completed, added_donation_amount, row)
   row["Address"] = mailchimp_style_combined_address_field_for_row(row)
   row["Tags"] = tags
+  row["Boots Paid Performances Ordered"] = boots_paid_performances_ordered
+  row["Boots Paid Performances List"] = boots_paid_performances_list
+  row["Boots Orders Total"] = boots_orders_total
   row["Donations"] = added_donation_amount
 end
 
@@ -1031,7 +1047,7 @@ end
 # Finally, generate a new one that only includes the fields they want
 table.by_col!
 table.delete_if { |header, _data|
-  !["First Name", "Last Name", "Email Address", "Phone", "Address", "Tags"].include?(header)
+  !["First Name", "Last Name", "Email Address", "Phone", "Address", "Tags", "Boots Paid Performances Ordered", "Boots Paid Performances List", "Boots Orders Total"].include?(header)
 }
 
 # HEAD version:
@@ -1079,6 +1095,11 @@ stats_by_email = table.group_by { |row| row["Email Address"] }.
       # Make a frequency count so we can see which phone number is used more often
       counts = cols_for_email[col].reduce(Hash.new(0)) { |h, v| h.store(v, h[v]+1); h }
       cols_for_email[col] = counts.map { |phone, c| "#{phone} (#{c})" }
+    elsif col == "Boots Orders Total"
+      # Add up the float amounts
+      cols_for_email[col] = [cols_for_email[col].sum.round(2).to_s]
+    elsif col == "Boots Paid Performances Ordered"
+      cols_for_email[col] = [cols_for_email[col].sum.to_s]
     else
       cols_for_email[col].uniq! { |v|
         v.nil? ? nil : v.downcase.delete(",.").strip.squeeze(" ")
@@ -1115,7 +1136,7 @@ arr = stats_by_email.sort_by { |email, row|
 
 # Cutoff for the long tail of data
 arr.delete_if { |row|
-  row["Show Count"] < 5
+  row["Boots Paid Performances List"].lines.count == 0
 }
 
 output = CSV.generate do |csv|
