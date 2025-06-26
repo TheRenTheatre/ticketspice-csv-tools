@@ -49,7 +49,7 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
   order_date = Date.parse(csv_row["Date Completed"])
   order_year = order_date.year
 
-  if page_name == "Nosferatu" && year == 2021
+  if page_name == "Nosferatu 2021" && year == 2021
     tags << "Patrons - 2021 - Nosferatu, Entire Run"
     tags << case date
             when Date.parse("2021-10-01")..Date.parse("2021-10-02")
@@ -653,7 +653,7 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
   elsif page_name == "OTR" && year == 2025
     tags << "Patrons - 2025 - OTR"
 
-  elsif (page_name == "Nosferatu" || page_name == "Nos At Door Sales") && year == 2024
+  elsif (page_name == "Nosferatu 2024" || page_name == "Nos At Door Sales") && year == 2024
     tags << "Patrons - 2024 - Nosferatu, Entire Run"
     tags << case date
       when Date.parse("2024-09-13")..Date.parse("2024-09-14")
@@ -881,6 +881,16 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     dates = [Date.new(2025, 6, 17), Date.new(2025, 7, 16)]
     raise "Unknown show date for Faith and Finn: #{date}" unless dates.include?(date)
     tags << "Patrons - 2025 - The Faith and Finn Variety Musical Extravaganza Show"
+
+  elsif page_name == "Orlando Vocal Collective sings Selections from Cowboy Carter" && year == 2025
+    tags << "Patrons - 2025 - Orlando Vocal Collective sings Selections from Cowboy Carter"
+
+  elsif page_name == "Broadway at the Renaissance presents Tony Award Winner LaChanze" && year == 2025
+    tags << "Patrons - 2025 - Broadway at the Renaissance presents Tony Award Winner LaChanze"
+
+  elsif page_name == "Nosferatu" && year == 2025
+    tags << "Patrons - 2025 - Nosferatu, Entire Run"
+
 
   else
     warn "\n\n\n"
