@@ -650,7 +650,8 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
   elsif page_name == "OTR" && year == 2024
     tags << "Patrons - 2024 - OTR"
 
-  elsif page_name == "OTR" && year == 2025
+  elsif (page_name == "OTR" && year == 2025) ||
+        (page_name == "OTR Pop-Up: Tits Out" && year == 2025)
     tags << "Patrons - 2025 - OTR"
 
   elsif (page_name == "Nosferatu 2024" || page_name == "Nos At Door Sales") && year == 2024
@@ -807,7 +808,8 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
             end
 
   elsif page_name == "College Park Players" && year == 2025
-    raise "Unknown show date for College Park Players: #{date}" unless date.in?([Date.new(2025, 3, 25), Date.new(2025, 4, 3), Date.new(2025, 5, 29)])
+    dates = [Date.new(2025, 3, 25), Date.new(2025, 4, 3), Date.new(2025, 5, 29), Date.new(2025, 7, 24)]
+    raise "Unknown show date for College Park Players: #{date}" unless date.in?(dates)
     tags << "Patrons - 2025 - College Park Players"
 
   elsif page_name == "TEST" && year == 2025
@@ -861,6 +863,17 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     year = 2025
     tags << "Patrons - 2025 - Les Vixens Burlesque presents Sapphic Ren Faire"
 
+  elsif page_name == "Les Vixens Burlesque presents Far Far Away" && year == 2025
+    # One-off event on Aug 24, 2025
+    year = 2025
+    tags << "Patrons - 2025 - Les Vixens Burlesque presents Far Far Away"
+
+  elsif page_name == "Les Vixens Burlesque presents Sapphic Ren Faire" && year.nil? &&
+    date_completed.year == 2025 && (8..9).include?(date_completed.month)
+    # One-off event on Oct 8, 2025
+    year = 2025
+    tags << "Patrons - 2025 - Les Vixens Burlesque presents Sapphic Ren Faire"
+
   elsif page_name =~ /^Hair$/i && year == 2025
     tags << "Patrons - 2025 - Hair, Entire Run"
 
@@ -885,10 +898,22 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
   elsif page_name == "Orlando Vocal Collective sings Selections from Cowboy Carter" && year == 2025
     tags << "Patrons - 2025 - Orlando Vocal Collective sings Selections from Cowboy Carter"
 
+  elsif page_name == "Orlando Vocal Collective sings Selections from Thriller" && year == 2025
+    tags << "Patrons - 2025 - Orlando Vocal Collective sings Selections from Thriller"
+
   elsif page_name == "Broadway at the Renaissance presents Tony Award Winner LaChanze" && year == 2025
     tags << "Patrons - 2025 - Broadway at the Renaissance presents Tony Award Winner LaChanze"
 
-  elsif page_name == "Nosferatu" && year == 2025
+  elsif page_name == "Broadway at the Renaissance presents Rachel Potter" && year == 2025
+    tags << "Patrons - 2025 - Broadway at the Renaissance presents Rachel Potter"
+
+  elsif page_name == "The Life Of A Showgirl Listening Party" && year == 2025
+    # One off event on Oct 2, 2025
+    tags << "Patrons - 2025 - The Life of a Showgirl Listening Party"
+
+  elsif page_name == "NosferatV" || (page_name =~ /^Nosferat[uV]$/ && year == 2025) ||
+        (page_name == "VBar: The Awakening with special guest Alaska" && year == 2025)
+    year = 2025
     tags << "Patrons - 2025 - Nosferatu, Entire Run"
 
 
