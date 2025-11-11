@@ -1,0 +1,201 @@
+#!/usr/bin/env ruby -w
+# frozen_string_literal: true
+
+require 'csv'
+require 'date'
+require 'time'
+require 'awesome_print'
+require 'active_support'
+
+REQUIRED_TICKETSPICE_FIELDS = ["Order Date",
+                               "Page Name",
+                               "Tax Deductible ($ Amount)",
+                               "Total Paid ($ Amount)",
+                               "Total Ticket Count (Quantity)",
+                               "Total Tickets ($ Amount)",
+                               "Total Tickets ($ Fee)",
+                               "Order Total ($ Amount)",
+                               "Coupon Code ($ Amount)"]
+
+TICKET_FEE_CHANGE_CUTOFF_DATE = Time.parse("2025-09-26 15:00:00 EDT")
+
+
+def warn_usage_and_abort
+  list_of_fields = [REQUIRED_TICKETSPICE_FIELDS.map(&:inspect)]
+  warn "\nUsage: #{$0} path/to/orders.csv\n\n" +
+       "Required fields:\n" +
+        "  - " + list_of_fields.join("\n  - ") + "\n\n"
+  exit 1
+end
+
+
+COUPONS_CSV_PATH = "/Users/chrisk/Downloads/coupons.csv"
+COUPONS_CSV = CSV.parse(File.read(COUPONS_CSV_PATH, encoding: 'bom|utf-8'), headers: true)
+
+# Coupons can either be a percent-off or a dollar amount off. We use a full
+# export of all the coupons to figure out which is which. This is important
+# because different math is used to apply each, and this affects the taxable
+# amount.
+def coupon_percent_or_dollar(page_name, coupon_code)
+  coupon = COUPONS_CSV.find { |row|
+    (row["Code"].upcase == coupon_code.upcase) &&
+    ((row["Global Coupon"] == "Yes") ||
+     (row["Global Coupon"] == "No" && row["Page Name"] == page_name))
+  }
+  raise "Couldn't find coupon: #{coupon_code} for page #{page_name}" if coupon.nil?
+
+  coupon["Discount $"].start_with?("$") ? :dollar : :percent
+end
+
+
+def fields_to_add(row)
+  percent_discount = nil
+  dollar_discount  = nil
+  taxable_amount   = nil
+  sales_tax_owed   = nil
+  coupon_type      = nil
+
+  order_date         = Time.parse(row["Order Date"])
+  page_name          = row["Page Name"]
+  order_total_amt    = row["Order Total ($ Amount)"].to_f
+  total_tickets_amt  = row["Total Tickets ($ Amount)"].to_f
+  total_ticket_count = row["Total Ticket Count (Quantity)"].to_i
+  tax_deductible_amt = row["Tax Deductible ($ Amount)"].to_f
+  coupon_code        = row["Coupon Code (Code)"]
+  if row["Coupon Code ($ Amount)"].nil?
+    coupon_code_amt = 0
+  elsif row["Coupon Code ($ Amount)"].start_with?("$")
+    coupon_code_amt = row["Coupon Code ($ Amount)"][1..].to_f
+  else
+    coupon_code_amt = 0
+  end
+
+  # We changed the per-ticket fee from $2.13 to $2.00 on this date. The fee is
+  # not subject to sales tax per Florida statute
+  if order_date >= TICKET_FEE_CHANGE_CUTOFF_DATE
+    ticket_fee = 2.00
+  else
+    ticket_fee = 2.13
+  end
+
+  order_total_without_donation_amt = order_total_amt - tax_deductible_amt
+
+  if coupon_code.present?
+    coupon_type = coupon_percent_or_dollar(row["Page Name"], coupon_code)
+  end
+
+  # Simple orders
+  if coupon_code.nil?
+    percent_discount = 0
+    dollar_discount = 0
+    taxable_amount = total_tickets_amt
+
+  # Comps
+  elsif coupon_code.present? && order_total_without_donation_amt == 0
+    percent_discount = 1
+    dollar_discount = 0
+    taxable_amount = 0
+
+  # Percent-based coupons
+  elsif coupon_code.present? && coupon_type == :percent
+    percent_discount = coupon_code_amt / (order_total_without_donation_amt + coupon_code_amt)
+    percent_discount = percent_discount.round(3)
+    taxable_amount = (order_total_without_donation_amt - (total_ticket_count * ticket_fee * (1 - percent_discount))) / 1.065
+    taxable_amount = taxable_amount.round(2)
+
+  # Dollar-based coupons
+  elsif coupon_code.present? && coupon_type == :dollar
+    dollar_discount = coupon_code_amt
+    taxable_amount = total_tickets_amt - (coupon_code_amt / 1.065)
+    taxable_amount = taxable_amount.round(2)
+  else
+    raise "Unknown ticket order type"
+  end
+
+  sales_tax_owed = taxable_amount * 0.065
+  sales_tax_owed = sales_tax_owed.round(4)
+
+  { "Apparent % Discount" => percent_discount,
+    "Apparent $ Discount" => dollar_discount,
+    "Taxable amount"      => taxable_amount,
+    "Sales tax owed"      => sales_tax_owed
+  }
+end
+
+
+
+def handle_input_file
+  file_contents = File.read(ARGV[0], encoding: 'bom|utf-8')
+
+  # Make sure we have all the fields we need
+  header_test_csv = CSV.parse(file_contents.lines.first, headers: true)
+  missing_headers = REQUIRED_TICKETSPICE_FIELDS.sort - header_test_csv.headers.sort
+  if missing_headers.any?
+    warn "\n\nYour orders report is missing these required fields: #{missing_headers.inspect}"
+    warn_usage_and_abort
+  end
+
+  # Parse whole file
+  table = CSV.parse(file_contents, headers: true)
+
+  # Add new fields
+  table.each do |row|
+    row << fields_to_add(row)
+  end
+
+  puts table
+
+  warn "Done.\n\n"
+end
+
+
+def run_tests
+  fixture_path = File.join(File.dirname(__FILE__), "fixtures/test_orders.csv")
+  test_csv_contents = File.read(fixture_path, encoding: 'bom|utf-8')
+  table = CSV.parse(test_csv_contents, headers: true)
+
+  expected_key_names = ["Apparent % Discount", "Apparent $ Discount", "Taxable amount", "Sales tax owed"]
+
+  fail_count = pass_count = total = 0
+
+  table.each do |row|
+    total += 1
+    input_fields = row.to_h.except(*expected_key_names)
+    expected = row.to_h.slice(*expected_key_names)
+    actual = fields_to_add(input_fields)
+
+    expected = expected.map { |k, v| [k, v.to_f] }.to_h
+    actual   = actual.map { |k, v| [k, v.to_f] }.to_h
+
+    if expected != actual
+      fail_count += 1
+      puts "\nError: test #{total} failed"
+      ap row.to_h
+      puts "Expected:"
+      ap expected
+      puts "Actual:"
+      ap actual
+      puts "\n\n\n"
+    else
+      pass_count += 1
+      print "."
+    end
+  end
+
+  puts <<~END
+
+     Tests: #{total}
+    Passed: #{pass_count}
+    Failed: #{fail_count}
+  END
+end
+
+
+warn_usage_and_abort unless ARGV.length == 1
+
+if ARGV[0] == "--test"
+  run_tests
+else
+  handle_input_file
+end
+
