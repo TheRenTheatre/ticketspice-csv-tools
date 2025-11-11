@@ -55,7 +55,7 @@ def fields_to_add(row)
   sales_tax_owed   = nil
   coupon_type      = nil
 
-  order_date         = Time.parse(row["Order Date"])
+  order_date         = Time.parse(row["Order Date"] + " America/New_York")
   page_name          = row["Page Name"]
   order_total_amt    = row["Order Total ($ Amount)"].to_f
   total_tickets_amt  = row["Total Tickets ($ Amount)"].to_f

@@ -1023,10 +1023,7 @@ table.each do |row|
   warn "  - warning: more than one Phone for order #{row["Order Number"].inspect}: #{phones.inspect}" if phones.count > 1
   row["Phone"] = phones.first
 
-  # TODO: these values don't mention a TZ. They look like local time, which is
-  # usually the same as this machine (America/New_York), so this works anyway for
-  # us, but we should pull that in from somewhere.
-  date_completed = Time.parse(row["Date Completed"])
+  date_completed = Time.parse(row["Date Completed"] + " America/New_York")
 
   tags = tags_to_apply(row["Page Name"], row["Date Selection"], row["Timeslot Selection"],
                        date_completed, added_donation_amount, row)
