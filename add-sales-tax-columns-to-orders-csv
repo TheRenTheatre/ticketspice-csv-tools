@@ -65,6 +65,7 @@ def fields_to_add(row)
   page_name          = row["Page Name"]
   order_total_amt    = row["Order Total ($ Amount)"].to_f
   total_tickets_amt  = row["Total Tickets ($ Amount)"].to_f
+  total_tickets_fee  = row["Total Tickets ($ Fee)"].to_f
   total_ticket_count = row["Total Ticket Count (Quantity)"].to_i
   tax_deductible_amt = row["Tax Deductible ($ Amount)"].to_f
   coupon_code        = row["Coupon Code (Code)"]
@@ -103,9 +104,11 @@ def fields_to_add(row)
 
   # Percent-based coupons
   elsif coupon_code.present? && coupon_type == :percent
-    percent_discount = coupon_code_amt / (order_total_without_donation_amt + coupon_code_amt)
-    percent_discount = percent_discount.round(3)
+    # percent_discount = coupon_code_amt / (order_total_without_donation_amt + coupon_code_amt)
+    # percent_discount = percent_discount.round(3)
+    percent_discount = coupon_percent(page_name, coupon_code)
     taxable_amount = (order_total_without_donation_amt - (total_ticket_count * ticket_fee * (1 - percent_discount))) / 1.065
+    # taxable_amount = order_total_without_donation_amt - total_tickets_fee
     taxable_amount = taxable_amount.round(2)
 
   # Dollar-based coupons
