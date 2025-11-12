@@ -49,6 +49,10 @@ def coupon_percent_or_dollar(page_name, coupon_code)
   coupon["Discount $"].start_with?("$") ? :dollar : :percent
 end
 
+def coupon_percent(page_name, coupon_code)
+  coupon = find_coupon(page_name, coupon_code)
+  coupon["Discount %"].sub("%", "").to_f / 100.0
+end
 
 def fields_to_add(row)
   percent_discount = nil
@@ -65,11 +69,9 @@ def fields_to_add(row)
   tax_deductible_amt = row["Tax Deductible ($ Amount)"].to_f
   coupon_code        = row["Coupon Code (Code)"]
   if row["Coupon Code ($ Amount)"].nil?
-    coupon_code_amt = 0
-  elsif row["Coupon Code ($ Amount)"].start_with?("$")
+    coupon_code_amt = nil
+  else # Strip dollar sign
     coupon_code_amt = row["Coupon Code ($ Amount)"][1..].to_f
-  else
-    coupon_code_amt = 0
   end
 
   # We changed the per-ticket fee from $2.13 to $2.00 on this date. The fee is
@@ -86,16 +88,17 @@ def fields_to_add(row)
     coupon_type = coupon_percent_or_dollar(page_name, coupon_code)
   end
 
+
   # Simple orders
   if coupon_code.nil?
-    percent_discount = 0
-    dollar_discount = 0
+    percent_discount = nil
+    dollar_discount = nil
     taxable_amount = total_tickets_amt
 
   # Comps
   elsif coupon_code.present? && order_total_without_donation_amt == 0
     percent_discount = 1
-    dollar_discount = 0
+    dollar_discount = nil
     taxable_amount = 0
 
   # Percent-based coupons
