@@ -35,14 +35,17 @@ COUPONS_CSV = CSV.parse(File.read(COUPONS_CSV_PATH, encoding: 'bom|utf-8'), head
 # export of all the coupons to figure out which is which. This is important
 # because different math is used to apply each, and this affects the taxable
 # amount.
-def coupon_percent_or_dollar(page_name, coupon_code)
+def find_coupon(page_name, coupon_code)
   coupon = COUPONS_CSV.find { |row|
     (row["Code"].upcase == coupon_code.upcase) &&
     ((row["Global Coupon"] == "Yes") ||
      (row["Global Coupon"] == "No" && row["Page Name"] == page_name))
   }
   raise "Couldn't find coupon: #{coupon_code} for page #{page_name}" if coupon.nil?
-
+  coupon
+end
+def coupon_percent_or_dollar(page_name, coupon_code)
+  coupon = find_coupon(page_name, coupon_code)
   coupon["Discount $"].start_with?("$") ? :dollar : :percent
 end
 
