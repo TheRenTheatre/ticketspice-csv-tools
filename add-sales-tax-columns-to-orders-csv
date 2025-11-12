@@ -10,7 +10,6 @@ require 'active_support'
 REQUIRED_TICKETSPICE_FIELDS = ["Order Date",
                                "Page Name",
                                "Tax Deductible ($ Amount)",
-                               "Total Paid ($ Amount)",
                                "Total Ticket Count (Quantity)",
                                "Total Tickets ($ Amount)",
                                "Total Tickets ($ Fee)",
