@@ -116,6 +116,7 @@ def fields_to_add(row)
     dollar_discount = coupon_code_amt
     taxable_amount = total_tickets_amt - (coupon_code_amt / 1.065)
     taxable_amount = taxable_amount.round(2)
+
   else
     raise "Unknown ticket order type"
   end
