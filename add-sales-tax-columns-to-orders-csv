@@ -80,7 +80,7 @@ def fields_to_add(row)
   order_total_without_donation_amt = order_total_amt - tax_deductible_amt
 
   if coupon_code.present?
-    coupon_type = coupon_percent_or_dollar(row["Page Name"], coupon_code)
+    coupon_type = coupon_percent_or_dollar(page_name, coupon_code)
   end
 
   # Simple orders
