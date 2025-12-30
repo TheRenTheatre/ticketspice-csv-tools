@@ -916,6 +916,16 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     year = 2025
     tags << "Patrons - 2025 - Nosferatu, Entire Run"
 
+  elsif page_name == "The Office Holiday Party Musical Extravaganza Show 2025" && year == 2025
+    tags << "Patrons - 2025 - The Office Holiday Party Musical Extravaganza Show"
+
+  elsif page_name == "RuPaul's Drag Race Season 18 Premiere Party" && year.nil?
+    # Weekly events starting Jan 2, 2026
+    year = 2026
+    tags << "Patrons - 2026 - RuPaul's Drag Race Season 18 Watch Party"
+
+  elsif page_name == "Mean Girls" && year == 2026
+    tags << "Patrons - 2026 - Mean Girls"
 
   else
     warn "\n\n\n"
