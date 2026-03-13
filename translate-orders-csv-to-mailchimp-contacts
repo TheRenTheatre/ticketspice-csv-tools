@@ -651,7 +651,9 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     tags << "Patrons - 2024 - OTR"
 
   elsif (page_name == "OTR" && year == 2025) ||
-        (page_name == "OTR Pop-Up: Tits Out" && year == 2025)
+        (page_name == "OTR Pop-Up: Tits Out" && year == 2025) ||
+        (page_name == "OTR 2025")
+    year = 2025
     tags << "Patrons - 2025 - OTR"
 
   elsif (page_name == "Nosferatu 2024" || page_name == "Nos At Door Sales") && year == 2024
@@ -926,6 +928,16 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
 
   elsif page_name == "Mean Girls" && year == 2026
     tags << "Patrons - 2026 - Mean Girls"
+
+  elsif (page_name == "Off The Record" && year == 2026) ||
+        (page_name == "Off The Record" && order_year == 2026)
+    year = 2026
+    tags << "Patrons - 2026 - OTR"
+
+  elsif page_name == "A Taste of La Mami with Orusha San Miguel" && year.nil?
+    # One off event on Mar 17, 2026
+    year = 2026
+    tags << "Patrons - 2026 - A Taste of La Mami with Orusha San Miguel"
 
   else
     warn "\n\n\n"
