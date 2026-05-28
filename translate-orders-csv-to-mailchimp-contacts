@@ -939,6 +939,40 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     year = 2026
     tags << "Patrons - 2026 - A Taste of La Mami with Orusha San Miguel"
 
+  elsif page_name == "Homecoming Week" && year == 2026
+    tags << "Patrons - 2026 - Homecoming Week"
+
+  elsif page_name == "Disco Boots" && (year == 2026 ||
+                                       (year.nil? && order_year == 2026))
+    year = 2026
+    tags << "Patrons - 2026 - Disco Boots"
+
+  elsif page_name == "WOR$T LISTENING PARTY IN AMERICA" && year.nil?
+    # One-off event - Slayyyter album release party on Mar 26, 2026
+    year = 2026
+    tags << "Patrons - 2026 - Slayyyter Listening Party"
+
+  elsif page_name.in?(["Musical Mondays The Plastics Cabaret",
+                       "Musical Mondays: Let's hear it for the Boys!",
+                       "Musical Mondays: Dude Sings The Divas!"]) && year == 2026
+    # We sold advance tickets for MM using several pages in 2026
+    tags << "Patrons - 2026 - Musical Mondays"
+
+  elsif page_name == "Midnight Meow: The Kitty Kat Ball Official Afterparty" && year.nil?
+    year = 2026
+    tags << "Patrons - 2026 - Midnight Meow: The Kitty Kat Ball Official Afterparty"
+
+  elsif page_name == "Les Vixens Presents: Zodiac" && year == 2026
+    tags << "Patrons - 2026 - Les Vixens Presents: Zodiac"
+
+  elsif page_name == "The Disco Fever Benefit Ball" && year == 2026
+    tags << "Patrons - 2026 - The Disco Fever Benefit Ball"
+
+  elsif page_name == "GAGA BALL: Monster Renaissance" && year.nil? && order_year == 2026
+    year = 2026
+    tags << "Patrons - 2026 - Gaga Ball: Monster Renaissance"
+
+
   else
     warn "\n\n\n"
     warn "Error handling row:\n\n#{csv_row.inspect}\n\n"
