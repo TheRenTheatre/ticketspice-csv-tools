@@ -1108,28 +1108,34 @@ table.delete_if { |header, _data|
 }
 
 
-# Construct a new table where we only have one entry for each unique
-# combination of name/email/phone/address, de-duping that person's tags as we go
-personal_info_mapped_to_tags = Hash.new { |hash, key| hash[key] = [] }
+# Construct a new table where we only have one entry for each unique email,
+# updating to the latest name/phone/address and de-duping that person's tags as we go
+emails_mapped_to_info_and_tags = Hash.new { |hash, key| hash[key] = {tags: []} }
 table.by_row!
 table.each do |row|
-  key = [row["First Name"], row["Last Name"], row["Email Address"], row["Phone"], row["Address"]]
-  personal_info_mapped_to_tags[key].concat(row["Tags"]).uniq!
+  email = row["Email Address"]
+  info = {first_name: row["First Name"], last_name: row["Last Name"], phone: row["Phone"], address: row["Address"]}
+  info.each { |k, v|
+    emails_mapped_to_info_and_tags[email][k] = v unless v.nil?
+  }
+  emails_mapped_to_info_and_tags[email][:tags].concat(row["Tags"]).uniq!
 end
 
+
 output_string = CSV.generate do |csv|
-  csv << ["First Name", "Last Name", "Email Address", "Phone", "Address", "Tags"]
-  personal_info_mapped_to_tags.each_pair do |personal_info, tags|
+  csv << ["Email Address", "First Name", "Last Name", "Phone", "Address", "Tags"]
+  emails_mapped_to_info_and_tags.each_pair do |email, info_and_tags|
     # Surround single tags in quotes only when they contain commas
     # https://mailchimp.com/help/format-guidelines-for-your-import-file/
-    formatted_tags_field = tags.map { |t|
+    formatted_tags_field = info_and_tags[:tags].map { |t|
       if t.include?(",")
         "\"#{t}\""
       else
         t
       end
     }.join(",")
-    csv << personal_info.push(formatted_tags_field)
+    row = [email] + info_and_tags.values_at(:first_name, :last_name, :phone, :address) + [formatted_tags_field]
+    csv << row
   end
 end
 
