@@ -952,7 +952,8 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     year = 2026
     tags << "Patrons - 2026 - Slayyyter Listening Party"
 
-  elsif page_name.in?(["Musical Mondays The Plastics Cabaret",
+  elsif page_name.in?(["Musical Mondays",
+                       "Musical Mondays The Plastics Cabaret",
                        "Musical Mondays: Let's hear it for the Boys!",
                        "Musical Mondays: Dude Sings The Divas!"]) && year == 2026
     # We sold advance tickets for MM using several pages in 2026
