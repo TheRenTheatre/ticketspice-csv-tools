@@ -969,9 +969,42 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
   elsif page_name == "The Disco Fever Benefit Ball" && year == 2026
     tags << "Patrons - 2026 - The Disco Fever Benefit Ball"
 
-  elsif page_name == "GAGA BALL: Monster Renaissance" && year.nil? && order_year == 2026
+  elsif (page_name == "GAGA BALL: Monster Renaissance" ||
+         page_name == "GAGA BALL: Monster Renaissance presented by MRMS") && year.nil? && order_year == 2026
     year = 2026
     tags << "Patrons - 2026 - Gaga Ball: Monster Renaissance"
+
+  elsif page_name == "FIFA World Cup Watch Parties" && year == 2026
+    tags << "Patrons - 2026 - FIFA World Cup Watch Parties"
+
+  elsif page_name == "CONFESSIONS" && year.nil? && order_year == 2026
+    year = 2026
+    tags << "Patrons - 2026 - OTR"
+
+  elsif page_name == 'Tiffany "New York" Pollard at OTR' && year == 2026
+    tags << "Patrons - 2026 - OTR"
+
+  elsif page_name == "Project Runway Watch Party with Jeffrey Kelly" &&
+        (year == 2026 || (year.nil? && order_year == 2026))
+    year = 2026
+    tags << "Patrons - 2026 - Project Runway Watch Party"
+
+  elsif page_name == "Love Island Finale Watch Party" && year.nil? && order_year == 2026
+    year = 2026
+    tags << "Patrons - 2026 - Love Island Finale Watch Party"
+
+  elsif page_name == "Ren Zodiac Leo Party" && year.nil? && order_year == 2026
+    year = 2026
+    tags << "Patrons - 2026 - Ren Zodiac Parties"
+
+  elsif page_name == "Petal Listening Party" && year == 2026
+    tags << "Patrons - 2026 - Petal Listening Party"
+
+  elsif page_name == "Nosferatu — The Citadel" && (year == 2026 || (year.nil? && order_year == 2026))
+    year = 2026
+    tags << "Patrons - 2026 - Nosferatu, Entire Run"
+
+
 
 
   else
