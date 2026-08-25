@@ -5,7 +5,8 @@ require 'csv'
 require 'date'
 require 'time'
 require 'awesome_print'
-require 'active_support/core_ext/object/inclusion'
+require 'active_support'
+require 'active_support/core_ext'
 
 REQUIRED_TICKETSPICE_FIELDS = ["Order Number",
                                "Date Completed",
@@ -1133,6 +1134,11 @@ table.delete_if do |row|
   end
 end
 
+# Optional: only keep data from the last year of orders
+# table.delete_if { |row|
+#   date_completed = Time.parse(row["Date Completed"] + " America/New_York")
+#   date_completed < 1.year.ago
+# }
 
 # Finally, generate a new one that only includes the fields they want
 table.by_col!
