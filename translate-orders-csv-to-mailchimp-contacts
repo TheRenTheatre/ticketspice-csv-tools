@@ -1158,7 +1158,14 @@ table.each do |row|
     emails_mapped_to_info_and_tags[email][k] = v unless v.nil?
   }
   emails_mapped_to_info_and_tags[email][:tags].concat(row["Tags"]).uniq!
+  emails_mapped_to_info_and_tags[email][:order_count] ||= 0
+  emails_mapped_to_info_and_tags[email][:order_count] += 1
 end
+
+# Only keep contacts with at least 3 orders
+emails_mapped_to_info_and_tags.delete_if { |email, info_and_tags|
+  info_and_tags[:order_count] < 3
+}
 
 
 output_string = CSV.generate do |csv|
