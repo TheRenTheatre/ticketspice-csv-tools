@@ -1009,6 +1009,20 @@ def tags_to_apply(page_name, date_selection, timeslot_selection, date_completed,
     year = 2026
     tags << "Patrons - 2026 - are we up?: a pride affair"
 
+  elsif page_name == "The Pheromones Single Release Show" && year.nil? && order_year == 2026
+    year = 2026
+    tags << "Patrons - 2026 - The Pheromones Single Release Show"
+
+  elsif page_name == "The Office Holiday Party Musical Extravaganza Show" && year == 2026
+    tags << "Patrons - 2026 - The Office Holiday Party Musical Extravaganza Show"
+
+  elsif page_name == "Conor Janda: An Hour of Stand Up" && year.nil? && order_year == 2026
+    year = 2026
+    tags << "Patrons - 2026 - Conor Janda: An Hour of Stand Up"
+
+  elsif page_name == "RYOT TOUR: ICONS" && year.nil? && order_year.in?([2026, 2027])
+    year = 2027
+    tags << "Patrons - 2027 - OTR"
 
 
   else
